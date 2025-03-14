@@ -171,6 +171,7 @@ export default function Dashboard() {
                 <SectionHeader title="Recent Orders" actionLink={{ text: "See All", href: "#" }} />
                 <DataTable
                     columns={orderColumns}
+                    // showFooter={true}
                     showFooter={false}
                     data={ordersData}
                     actionColumn={{

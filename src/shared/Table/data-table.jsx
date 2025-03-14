@@ -14,7 +14,7 @@ export function DataTable({
                               currentPage = 1,
                               totalPages = 10,
                               onPageChange,
-                              showFooter = true, // New prop to control footer visibility
+                              showFooter = true,
                           }) {
     const renderPagination = () => {
         const pages = [];
@@ -41,7 +41,7 @@ export function DataTable({
         return (
             <div className="flex items-center justify-between mt-4">
                 <Button
-                    variant="outline" // Use the new outline button variant
+                    variant="outline"
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                     className="flex items-center gap-2"
@@ -51,7 +51,7 @@ export function DataTable({
                 </Button>
                 <div className="flex items-center">{pages}</div>
                 <Button
-                    variant="outline" // Use the new outline button variant
+                    variant="outline"
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                     className="flex items-center gap-2"
@@ -112,7 +112,7 @@ export function DataTable({
                     {showFooter && (
                         <tfoot>
                         <tr>
-                            <td colSpan={columns.length + (showCheckbox ? 1 : 0) + (actionColumn ? 1 : 0)} className="p-4">
+                            <td colSpan={columns.length + (showCheckbox ? 1 : 0) + (actionColumn ? 1 : 0)} className="pb-3 border-t border-[#e4e7ec]">
                                 {showPagination && renderPagination()}
                             </td>
                         </tr>
