@@ -24,7 +24,7 @@ const SearchFilter = ({ onSearch, filters }) => {
     <div className="flex flex-col md:flex-row items-center gap-2 w-full max-w-md mb-11">
       {/* Dropdown filter */}
       {currentRoute === "/dashboard/orderManagement" && (
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <h2 className="text-xl font-semibold">Filter:</h2>
           <select
             value={selectedFilter}

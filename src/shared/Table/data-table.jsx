@@ -27,7 +27,7 @@ export function DataTable({
 
   // List of filters
   const filters = [
-    { label: "Select Filter", value: "" },
+    { label: "Select", value: "" },
     { label: "Customer", value: "customer" },
     { label: "ID", value: "id" },
     { label: "Payment Status", value: "paymentStatus" },
