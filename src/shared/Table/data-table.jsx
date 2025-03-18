@@ -99,7 +99,7 @@ export function DataTable({
                             {columns.map((column) => (
                                 <td key={`${rowIndex}-${column.key}`} className="p-4 text-sm text-[#344054]">
                                     {column.render ? column.render(row[column.key], row) : row[column.key]}
-                                </td>
+                                    </td>
                             ))}
                             {actionColumn && (
                                 <td className="p-4" onClick={(e) => e.stopPropagation()}>
