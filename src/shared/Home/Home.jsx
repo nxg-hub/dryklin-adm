@@ -193,7 +193,7 @@ export default function Home() {
     { id: "profile", label: "Profile Updates" },
     { id: "orders", label: "Order Placements" },
   ];
-
+  const yAxis = [100, 75, 50, 25, 0];
   return (
     <div className="container mx-auto py-6 px-4">
       {/* StatISTICs Cards */}
@@ -228,10 +228,12 @@ export default function Home() {
 
       {/* Analytics */}
       <AnalyticsChart
+        title="Analytics"
         tabs={analyticsTabs}
         defaultTab="login"
         data={analyticsData}
         onPeriodChange={(period) => console.log("Period changed:", period)}
+        yAxis={yAxis}
       />
     </div>
   );
