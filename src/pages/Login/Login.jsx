@@ -1,32 +1,93 @@
+"use client";
+
 import { useState } from "react";
 import InputField from "../../shared/Inputs/Input.jsx";
 import Button from "../../shared/Buttons/Button.jsx";
 import Logo from "../../components/Logo/logo.jsx";
-import {Checkbox} from "../../components/checkbox.jsx";
+import { Checkbox } from "../../components/checkbox.jsx";
+import FeedbackModal from "../../components/modal.jsx";
+import apiService from "../../services/apiService.js";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [modalConfig, setModalConfig] = useState({
+        show: false,
+        type: "success",
+        title: "",
+        description: "",
+        redirectPath: "/dashboard",
+    });
 
-    const handleSubmit = (e) => {
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // API integration
-        console.log({ email, password, rememberMe });
+        setIsLoading(true);
+
+        try {
+            const response = await apiService.login(email, password);
+
+            if (response.status === "ACCEPTED") {
+                if (rememberMe) {
+                    localStorage.setItem("token", response.data.token);
+                    localStorage.setItem("sessionId", response.data.sessionId);
+                } else {
+                    sessionStorage.setItem("token", response.data.token);
+                    sessionStorage.setItem("sessionId", response.data.sessionId);
+                }
+
+                setModalConfig({
+                    show: true,
+                    type: "success",
+                    title: "Login Successful",
+                    description: response.message || "You have been successfully logged in.",
+                    redirectPath: "/dashboard",
+                });
+            } else {
+                setModalConfig({
+                    show: true,
+                    type: "error",
+                    title: "Login Failed",
+                    description: response.message || "Login failed. Please try again.",
+                    redirectPath: null,
+                });
+            }
+        } catch (err) {
+            const errorMessage = err.response?.data?.message || "An error occurred. Please try again later.";
+
+            setModalConfig({
+                show: true,
+                type: "error",
+                title: "Login Error",
+                description: errorMessage,
+                redirectPath: null,
+            });
+            console.error("Login error:", err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const closeModal = () => {
+        setModalConfig({ ...modalConfig, show: false });
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center p-6">
-            <div className="flex justify-start absolute top-6 left-6">
+        <div className="w-full min-h-screen flex items-center justify-center">
+            <div className="absolute top-6 left-6">
                 <Logo />
             </div>
 
-            <div className="w-full max-w-md mt-20">
+            <div className="w-full max-w-md px-6">
                 <h2 className="text-3xl font-medium text-[#E85C13] text-center mb-2">Welcome</h2>
-                <p className="text-gray-600 text-center mb-8">Input your log in details below</p>
+                <p className="text-gray-600 text-center mb-8">Input your login details below</p>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <InputField
+                <form onSubmit={handleSubmit} className="space-y-6 lg:-ml-15">
+                <InputField
                         id="email"
                         type="email"
                         label="Enter Email Address"
@@ -35,7 +96,6 @@ export default function LoginPage() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
-
                     <InputField
                         id="password"
                         type="password"
@@ -45,39 +105,40 @@ export default function LoginPage() {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center w-full">
                         <div className="flex items-center">
-                            <Checkbox />
-                            {/*<input*/}
-                            {/*    id="remember-me"*/}
-                            {/*    type="checkbox"*/}
-                            {/*    checked={rememberMe}*/}
-                            {/*    onChange={(e) => setRememberMe(e.target.checked)}*/}
-                            {/*    className="h-4 w-4 text-[#E85C13] focus:ring-[#E85C13] border-gray-300 rounded"*/}
-                            {/*    style={{*/}
-                            {/*        accentColor: "#E85C13",*/}
-                            {/*    }}*/}
-                            {/*/>*/}
+                            <Checkbox
+                                id="remember-me"
+                                checked={rememberMe}
+                                onCheckedChange={() => setRememberMe(!rememberMe)}
+                            />
                             <label htmlFor="remember-me" className="ml-2 block text-gray-600">
                                 Remember Me
                             </label>
                         </div>
-                        <div className="flex justify-end">
-                            <a href="/reset-password" className="text-[#E85C13] hover:underline">
-                                Forgotten Password
-                            </a>
-                        </div>
+                        <a href="/reset-password" className="text-[#E85C13] hover:underline ml-auto">
+                            Forgotten Password
+                        </a>
                     </div>
 
-                    <Button
-                        type="submit"
-                        variant="primary"
-                    >
-                        Log In
+                    <Button type="submit" variant="primary" disabled={isLoading} fullWidth={true}>
+                        {isLoading ? "Logging in..." : "Log In"}
                     </Button>
                 </form>
             </div>
+
+            {modalConfig.show && (
+                <FeedbackModal
+                    type={modalConfig.type}
+                    title={modalConfig.title}
+                    description={modalConfig.description}
+                    buttonText={modalConfig.type === "success" ? "Continue" : "Try Again"}
+                    redirectPath={modalConfig.redirectPath}
+                    onClose={closeModal}
+                    onButtonClick={modalConfig.type === "success" ? null : closeModal}
+                    primaryColor="#E85C13"
+                />
+            )}
         </div>
     );
 }

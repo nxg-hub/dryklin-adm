@@ -1,117 +1,53 @@
-"use client";
-
-import { X, Check, AlertCircle, Info } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { CheckCircle, XCircle, X } from "lucide-react";
+import Button from "../shared/Buttons/Button.jsx";
 
 export default function FeedbackModal({
-                                          type = "success", // 'success', 'error', 'warning', 'info'
+                                          type,
                                           title,
                                           description,
-                                          buttonText = "Proceed",
-                                          onButtonClick,
+                                          buttonText,
+                                          redirectPath,
                                           onClose,
-                                          redirectPath = "/",
-                                          icon,
-                                          primaryColor = "#e86317",
-                                          secondaryColor = "#4bc538", // Default to green for success
+                                          onButtonClick,
+                                          primaryColor = "#E85C13",
                                       }) {
-    const [isClient, setIsClient] = useState(false); // Track client-side rendering
-    const router = useRouter();
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        setIsClient(true); // Set to true when component mounts (client-side)
-    }, []);
-
-    console.log("FeedbackModal rendered", { isClient, type, title, description }); // Debugging
-
-    // Define icon and color based on type
-    const getIconAndColor = () => {
-        switch (type) {
-            case "error":
-                return {
-                    icon: <AlertCircle className="w-16 h-16 text-[#ff4d4f] stroke-[3]" />,
-                    secondaryColor: "#ff4d4f", // Red for errors
-                };
-            case "warning":
-                return {
-                    icon: <AlertCircle className="w-16 h-16 text-[#faad14] stroke-[3]" />,
-                    secondaryColor: "#faad14", // Yellow for warnings
-                };
-            case "info":
-                return {
-                    icon: <Info className="w-16 h-16 text-[#1890ff] stroke-[3]" />,
-                    secondaryColor: "#1890ff", // Blue for info
-                };
-            default:
-                return {
-                    icon: <Check className="w-16 h-16 text-[#4bc538] stroke-[3]" />,
-                    secondaryColor: "#4bc538", // Green for success
-                };
-        }
-    };
-
-    const { icon: typeIcon, secondaryColor: typeSecondaryColor } = getIconAndColor();
-    const displayIcon = icon || typeIcon;
-
-    const handleProceed = () => {
+    const handleButtonClick = () => {
         if (onButtonClick) {
             onButtonClick();
-        } else if (redirectPath && isClient) {
-            router.push(redirectPath);
-        }
-    };
-
-    const handleClose = () => {
-        if (onClose) {
+        } else if (redirectPath) {
+            navigate(redirectPath);
+        } else {
             onClose();
-        } else if (isClient) {
-            router.push("/");
         }
     };
-
-    if (!isClient) {
-        return null; // Don't render on the server
-    }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-[#ffffff] p-6">
-            <div className="w-full max-w-md relative">
-                <button
-                    onClick={handleClose}
-                    className="absolute right-0 top-0 text-[#5d5d5d] hover:text-[#555555] transition-colors"
-                    aria-label="Close"
-                >
-                    <X className="w-8 h-8" />
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative">
+                <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                    <X className="h-5 w-5" />
                 </button>
 
-                <div className="flex flex-col items-center justify-center mt-12 mb-8">
-                    <div
-                        className="w-36 h-36 rounded-full flex items-center justify-center"
-                        style={{
-                            backgroundColor: `${typeSecondaryColor}20`, // 20% opacity version of the color
-                            borderColor: typeSecondaryColor,
-                            borderWidth: "4px",
-                        }}
-                    >
-                        {displayIcon}
-                    </div>
-                </div>
+                <div className="flex flex-col items-center text-center">
+                    {type === "success" ? (
+                        <CheckCircle size={64} className="text-green-500 mb-4" />
+                    ) : (
+                        <XCircle size={64} className="text-red-500 mb-4" />
+                    )}
 
-                <div className="text-center space-y-4 mb-12">
-                    <h1 className="text-3xl font-bold" style={{ color: primaryColor }}>
+                    <h3 className="text-xl font-semibold mb-2" style={{ color: type === "success" ? primaryColor : "#EF4444" }}>
                         {title}
-                    </h1>
-                    <p className="text-[#5d5d5d] text-xl">{description}</p>
-                </div>
+                    </h3>
 
-                <button
-                    onClick={handleProceed}
-                    className="w-full py-4 text-white text-xl font-medium rounded-lg hover:bg-opacity-90 transition-colors"
-                    style={{ backgroundColor: primaryColor }}
-                >
-                    {buttonText}
-                </button>
+                    <p className="text-gray-600 mb-6">{description}</p>
+
+                    <Button variant="modal" onClick={handleButtonClick}>
+                        {buttonText}
+                    </Button>
+                </div>
             </div>
         </div>
     );
