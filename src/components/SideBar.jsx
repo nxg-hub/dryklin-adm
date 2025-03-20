@@ -6,7 +6,6 @@ import { RxDashboard } from "react-icons/rx";
 import logo from "../assets/white-logo.png";
 import { GrAnalytics, GrUserAdmin } from "react-icons/gr";
 
-// export default Sidebar;
 const Sidebar = () => {
   const location = useLocation();
   const currentRoute = location.pathname;
