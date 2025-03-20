@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaRegUserCircle, FaUser } from "react-icons/fa";
-import { MdAccountBalance, MdOutlineMenuBook } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
+import { MdOutlineMenuBook } from "react-icons/md";
 import { RxDashboard } from "react-icons/rx";
 import logo from "../assets/white-logo.png";
 import { GrAnalytics, GrUserAdmin } from "react-icons/gr";
