@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { StatusBadge } from "../../../../shared/Status-Badge/status-badge";
 import { DataTable } from "../../../../shared/Table/data-table";
 import { MdOutlineMenuBook } from "react-icons/md";
+import { useSelector } from "react-redux";
 
 const OrderManagement = () => {
+  const store = useSelector((state) => state);
+  // console.log(store);
   const ordersData = [
     {
       id: "0081727",

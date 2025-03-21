@@ -13,7 +13,14 @@ const SearchFilter = ({ onSearch, filters }) => {
     setSearchTerm(value);
     onSearch(value, selectedFilter); // Pass both search term & filter
   };
-
+  const handleAlert = () => {
+    if (
+      currentRoute === "/dashboard/orderManagement" &&
+      selectedFilter === ""
+    ) {
+      alert(" Please Select a filter Option.");
+    }
+  };
   const handleFilterChange = (event) => {
     const value = event.target.value;
     setSelectedFilter(value);
@@ -41,7 +48,7 @@ const SearchFilter = ({ onSearch, filters }) => {
 
       {/* Search input */}
       {
-        <div className="relative w-[100%]">
+        <div onClick={handleAlert} className="relative w-[100%]">
           <input
             type="text"
             value={searchTerm}
