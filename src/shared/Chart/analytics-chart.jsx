@@ -6,6 +6,16 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../components/tabs.jsx";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+} from "recharts";
 
 export function AnalyticsChart({
   tabs,
@@ -15,6 +25,7 @@ export function AnalyticsChart({
   period = "Monthly",
   onPeriodChange,
   yAxis,
+  type,
 }) {
   return (
     <div>
@@ -57,44 +68,71 @@ export function AnalyticsChart({
 
         {tabs.map((tab) => (
           <TabsContent key={tab.id} value={tab.id} className="mt-0">
-            {data[tab.id] && (
-              <div className="h-64 relative">
-                <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-[#667085]">
-                  {/* <div>100</div>
-                  <div>75</div>
-                  <div>50</div>
-                  <div>25</div>
-                  <div>0</div> */}
-                  {yAxis.map((y) => {
-                    return <div>{y}</div>;
-                  })}
-                </div>
-                <div className="ml-8 h-full flex items-end">
-                  {data[tab.id].values.map((value, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col items-center mx-2 flex-1">
-                      <div
-                        className="w-full bg-[#fdc842] rounded-t"
-                        style={{ height: `${value}%` }}></div>
-                      <div className="mt-2 text-xs text-[#667085]">
-                        {data[tab.id].labels[index]}
-                      </div>
-                      {data[tab.id].subLabels && (
-                        <div className="text-xs text-[#667085]">
-                          {data[tab.id].subLabels[index]}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <div className="absolute left-8 right-0 top-0 bottom-16 flex flex-col justify-between">
-                  <div className="border-b border-[#e4e7ec]"></div>
-                  <div className="border-b border-[#e4e7ec]"></div>
-                  <div className="border-b border-[#e4e7ec]"></div>
-                  <div className="border-b border-[#e4e7ec]"></div>
-                </div>
-              </div>
+            {data[tab.id] &&
+            //   <div className="h-64 relative">
+            //     <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-[#667085]">
+            //       {yAxis.map((y, i) => {
+            //         return <div key={i}>{y}</div>;
+            //       })}
+            //     </div>
+            //     <div className="ml-8 h-full flex items-end">
+            //       {data[tab.id].values.map((value, index) => (
+            //         <div
+            //           key={index}
+            //           className="flex flex-col items-center mx-2 flex-1">
+            //           <div
+            //             className="w-full bg-[#fdc842] rounded-t"
+            //             style={{ height: `${value}%` }}></div>
+            //           <div className="mt-2 text-xs text-[#667085]">
+            //             {data[tab.id].labels[index]}
+            //           </div>
+            //           {data[tab.id].subLabels && (
+            //             <div className="text-xs text-[#667085]">
+            //               {data[tab.id].subLabels[index]}
+            //             </div>
+            //           )}
+            //         </div>
+            //       ))}
+            //     </div>
+            //     <div className="absolute left-8 right-0 top-0 bottom-16 flex flex-col justify-between">
+            //       <div className="border-b border-[#e4e7ec]"></div>
+            //       <div className="border-b border-[#e4e7ec]"></div>
+            //       <div className="border-b border-[#e4e7ec]"></div>
+            //       <div className="border-b border-[#e4e7ec]"></div>
+            //     </div>
+            //   </div>
+            type === "bar" ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={data[tab.id].labels.map((label, index) => ({
+                    label,
+                    value: data[tab.id].values[index],
+                  }))}>
+                  <XAxis dataKey="label" />
+                  <YAxis ticks={yAxis.map(Number)} />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#fdc842" />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart
+                  data={data[tab.id].labels.map((label, index) => ({
+                    label,
+                    value: data[tab.id].values[index],
+                  }))}>
+                  <XAxis dataKey="label" />
+                  <YAxis ticks={yAxis.map(Number)} />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#e86317"
+                    strokeWidth={2}
+                    dot={{ r: 5 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             )}
           </TabsContent>
         ))}

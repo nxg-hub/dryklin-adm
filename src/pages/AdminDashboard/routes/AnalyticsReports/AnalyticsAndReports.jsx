@@ -102,7 +102,7 @@ const AnalyticsAndReports = () => {
       values: [100, 50, 70, 50, 70, 50, 70, 50, 70, 50],
     },
   };
-  const retentionYaxis = ["125%", "100%", "75%", "50%", "25%"];
+  const retentionYaxis = ["125", "100", "75", "50", "25"];
   const userRetentionTab = [{ id: "userRetention", label: "User Retention" }];
 
   const reportData = {
@@ -180,6 +180,7 @@ const AnalyticsAndReports = () => {
         data={analyticsData}
         onPeriodChange={(period) => console.log("Period changed:", period)}
         yAxis={analyticsYaxis}
+        type="bar"
       />
       {/* user retention data */}
       <div className="mt-22">
@@ -190,6 +191,7 @@ const AnalyticsAndReports = () => {
           data={userRetentionData}
           onPeriodChange={(period) => console.log("Period changed:", period)}
           yAxis={retentionYaxis}
+          type="line"
         />
       </div>
       {/* order report */}
@@ -201,6 +203,7 @@ const AnalyticsAndReports = () => {
           data={reportData}
           onPeriodChange={(period) => console.log("Period changed:", period)}
           yAxis={reportYaxis}
+          type="bar"
         />
       </div>
     </div>

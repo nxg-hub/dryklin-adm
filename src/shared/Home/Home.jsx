@@ -234,6 +234,7 @@ export default function Home() {
         data={analyticsData}
         onPeriodChange={(period) => console.log("Period changed:", period)}
         yAxis={yAxis}
+        type="bar"
       />
     </div>
   );
