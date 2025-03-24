@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
 import LoginPage from "./pages/Login/Login.jsx";
 import ResetPassword from "./pages/Reset-Password/ResetPassword.jsx";
 import AdminDashboard from "./pages/AdminDashboard/Index.jsx";
@@ -32,6 +32,7 @@ function App() {
             />
             <Route path="/dashboard/subAdmins" element={<SubAdmin />} />
           </Route>
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
     </Router>

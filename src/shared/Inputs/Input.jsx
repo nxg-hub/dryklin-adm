@@ -21,7 +21,7 @@ export default function InputField({
     const inputType = type === "password" ? (showPassword ? "text" : "password") : type;
 
     return (
-        <div className="space-y-2" style={{ width: "530px" }}>
+        <div className="space-y-2 w-full sm:w-[530px]"> {/* Responsive width */}
             {label && (
                 <label htmlFor={id} className="block text-[#E86317] font-medium text-base text-left">
                     {label}
@@ -43,7 +43,7 @@ export default function InputField({
                             : "border-transparent text-[#6A6A6A]"
                     } ${className}`}
                     style={{
-                        height: "56px",
+                        height: "56px", // Default height
                         borderRadius: "8px",
                     }}
                 />
