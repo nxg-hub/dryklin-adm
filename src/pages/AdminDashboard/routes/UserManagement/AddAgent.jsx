@@ -8,13 +8,14 @@ const AddAgent = ({isOpen, onClose}) => {
 
     return (
       <div className="fixed inset-0 flex items-center justify-center border-2 border-[#a0a0a0] rounded-md overflow-y-auto p-4 z-50">
-         <button
-          className="absolute top-1 border border-gray-300 rounded-full p-2 right-1 text-gray-700 hover:text-red-500"
+        
+      <div className="relative bg-white p-11 rounded shadow-lg w-[900px] max-h-[120%] overflow-y-auto">
+      <button
+          className="absolute top-3 border border-gray-700  rounded-full p-2 right-2 text-gray-700 hover:text-red-500"
           onClick={onClose}
         >
           <X size={25} />
         </button>
-      <div className="bg-white p-11 rounded shadow-lg w-[900px] max-h-[120%] overflow-y-auto">
       <h2 className="text-xl text-[#E85C19] font-semibold mb-4">
         Add New Delivery Agent
         </h2>
@@ -90,13 +91,15 @@ const AddAgent = ({isOpen, onClose}) => {
               </div>
     
               {/* Submit Button */}
+              <div className="flex justify-end">
               <button
                 type="submit"
-                   className="bg-[#E85C19] text-white px-15 mt-3 py-5 rounded-lg hover:bg-[#c74e10] transition "
+                   className="bg-[#E85C19] flex justify-end text-white px-15 mt-3 py-5 rounded-lg hover:bg-[#c74e10] transition "
                 disabled={isSubmitting}
               >
                 Submit
               </button>
+              </div>
             </Form>
           )}
         </Formik>

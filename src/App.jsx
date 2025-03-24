@@ -8,6 +8,7 @@ import OrderManagement from "./pages/AdminDashboard/routes/OrderManagement/Order
 import UserManagement from "./pages/AdminDashboard/routes/UserManagement/UserManagement.jsx";
 import AnalyticsAndReports from "./pages/AdminDashboard/routes/AnalyticsReports/AnalyticsAndReports.jsx";
 import SubAdmin from "./pages/AdminDashboard/routes/SubAdmin/SubAdmin.jsx";
+import ViewDetails from "./pages/AdminDashboard/routes/UserManagement/viewDetails.jsx";
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
               element={<OrderManagement />}
             />
             <Route path="/dashboard/users" element={<UserManagement />} />
+            <Route path="/dashboard/users/viewdetails" element={<ViewDetails/>} />
+
             <Route
               path="/dashboard/analytics"
               element={<AnalyticsAndReports />}

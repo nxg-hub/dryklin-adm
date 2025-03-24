@@ -8,13 +8,14 @@ const AddServicePartner = ({isOpen, onClose}) => {
 
     return (
       <div className="fixed inset-0 flex items-center justify-center border-2 border-[#a0a0a0] rounded-md overflow-y-auto p-4 z-50">
-         <button
+         
+      <div className="relative bg-white p-11 rounded shadow-lg w-[900px] max-h-[120%] overflow-y-auto">
+      <button
           className="absolute top-1 border border-gray-300 rounded-full p-2 right-1 text-gray-700 hover:text-red-500"
           onClick={onClose}
         >
           <X size={25} />
         </button>
-      <div className="bg-white p-11 rounded shadow-lg w-[900px] max-h-[120%] overflow-y-auto">
       <h2 className="text-xl text-[#E85C19] font-semibold mb-4">
         Add Service Employee
         </h2>
