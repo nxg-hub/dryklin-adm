@@ -3,6 +3,7 @@ import { DataTable } from "../Table/data-table.jsx";
 import { StatusBadge } from "../Status-Badge/status-badge.jsx";
 import { AnalyticsChart } from "../Chart/analytics-chart.jsx";
 import { SectionHeader } from "../Section-Header/section-header.jsx";
+import { useState } from "react";
 
 export default function Home() {
   // DUMMY data for the dashboard
@@ -194,6 +195,7 @@ export default function Home() {
     { id: "orders", label: "Order Placements" },
   ];
   const yAxis = [100, 75, 50, 25, 0];
+  const [searchTerm, setSearchTerm] = useState("");
   return (
     <div className="container mx-auto py-6 px-4">
       {/* StatISTICs Cards */}
@@ -212,6 +214,7 @@ export default function Home() {
         <DataTable
           columns={orderColumns}
           // showFooter={true}
+          searchTerm={searchTerm}
           showFooter={false}
           data={ordersData}
           actionColumn={{

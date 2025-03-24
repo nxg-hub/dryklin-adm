@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBadge } from "../../../../shared/Status-Badge/status-badge";
 import { DataTable } from "../../../../shared/Table/data-table";
 import { MdOutlineMenuBook } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import SearchFilter from "../../../../shared/Searchbar/SearchFilter";
+import { fetchOrders } from "../../../../redux/OrderMangementSlice";
 
 const OrderManagement = () => {
-  const store = useSelector((state) => state);
-  // console.log(store);
   const ordersData = [
     {
       id: "0081727",
@@ -832,10 +832,33 @@ const OrderManagement = () => {
   ];
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [filterBy, setFilterBy] = useState("id"); // Default filter
+  const [searchTerm, setSearchTerm] = useState("");
 
   const onPageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
+  // List of filters
+  const filters = [
+    { label: "Select", value: "" },
+    { label: "Customer", value: "customer" },
+    { label: "ID", value: "id" },
+    { label: "Payment Status", value: "paymentStatus" },
+    { label: "Order Status", value: "orderStatus" },
+  ];
+
+  // Handle search and filter changes
+  const handleSearch = (term, filter) => {
+    setSearchTerm(term);
+    setFilterBy(filter);
+  };
+  const dispatch = useDispatch();
+  const orders = useSelector((state) => state.orderManagement.orders);
+  // console.log(orders);
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, []);
   return (
     <div>
       <h2 className="text-2xl font-bold mb-11 flex items-center ">
@@ -845,17 +868,22 @@ const OrderManagement = () => {
           {ordersData.length}
         </span> */}
       </h2>
+      {/* Search & Filter Component */}
+      {<SearchFilter onSearch={handleSearch} filters={filters} />}
       <div>
         <DataTable
           columns={orderColumns}
+          filterBy={filterBy}
           showFooter={true}
-          data={ordersData}
+          data={orders}
+          searchTerm={searchTerm}
           currentPage={currentPage}
           onPageChange={onPageChange}
           actionColumn={{
             title: "",
             render: (row) => (
               <a href="#" className="text-[#e86317] text-sm hover:underline">
+                {console.log(row)}
                 View Details
               </a>
             ),
