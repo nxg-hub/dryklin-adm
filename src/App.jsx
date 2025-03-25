@@ -10,6 +10,7 @@ import AnalyticsAndReports from "./pages/AdminDashboard/routes/AnalyticsReports/
 import SubAdmin from "./pages/AdminDashboard/routes/SubAdmin/SubAdmin.jsx";
 import OTPValidationPage from "./pages/Reset-Password/OTP-Validation.jsx";
 import NewPasswordPage from "./pages/Reset-Password/NewPassword.jsx";
+import ViewDetails from "./pages/AdminDashboard/routes/UserManagement/viewDetails.jsx";
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
               element={<OrderManagement />}
             />
             <Route path="/dashboard/users" element={<UserManagement />} />
+            <Route path="/dashboard/users/viewdetails" element={<ViewDetails/>} />
+
             <Route
               path="/dashboard/analytics"
               element={<AnalyticsAndReports />}

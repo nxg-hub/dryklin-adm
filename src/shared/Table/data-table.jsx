@@ -45,15 +45,22 @@ export function DataTable({
     currentRoute === "/dashboard/orderManagement"
       ? item[filterBy]?.toLowerCase().includes(searchTerm.toLowerCase())
       : item.customer?.toLowerCase().includes(searchTerm.toLowerCase())
+      || item.company?.toLowerCase().includes(searchTerm.toLowerCase())
+      || item.name?.toLowerCase().includes(searchTerm.toLowerCase())
+
+
   );
+  console.log (data)
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
   // Get items for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
-  const currentItems = showFooter
+  const currentItems = showFooter 
     ? filteredData?.slice(startIndex, endIndex)
     : filteredData;
+
+    console.log(currentItems, showFooter)
   const renderPagination = () => {
     const pages = [];
     for (let i = 1; i <= totalPages; i++) {
