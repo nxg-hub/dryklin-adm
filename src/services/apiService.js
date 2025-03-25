@@ -1,11 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
-
 const apiService = {
     login: async (email, password) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+            const response = await axios.post(import.meta.env.VITE_DRYKLIN_LOGIN_ENDPOINT, {
                 email,
                 password,
             });
@@ -18,15 +16,13 @@ const apiService = {
     initiatePasswordReset: async (email) => {
         try {
             const response = await axios.post(
-                `${API_BASE_URL}/auth/initiate-password-reset?email=${encodeURIComponent(email)}`
+                `${import.meta.env.VITE_DRYKLIN_API_BASE_URL}/auth/initiate-password-reset?email=${encodeURIComponent(email)}`
             );
 
             if (response.data?.token) {
                 localStorage.setItem("resetToken", response.data.token);
                 localStorage.setItem("resetEmail", email);
-                // console.log("Stored reset token:", response.data.token);
             } else {
-                // console.warn("Token not found in response:", response.data);
                 throw new Error("Password reset initiation failed - no token received");
             }
 
@@ -50,7 +46,7 @@ const apiService = {
             }
 
             const response = await axios.post(
-                `${API_BASE_URL}/auth/validate-otp`,
+                import.meta.env.VITE_VALIDATE_OTP,
                 {
                     otp,
                     email,
@@ -68,7 +64,7 @@ const apiService = {
 
     resetPassword: async ({ resetToken, newPassword, confirmPassword }) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/auth/reset-password`, {
+            const response = await axios.post(import.meta.env.VITE_DRYKLIN_RESET_PASSWORD_ENDPOINT, {
                 resetToken,
                 newPassword,
                 confirmPassword
