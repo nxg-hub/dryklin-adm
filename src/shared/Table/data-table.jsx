@@ -23,12 +23,14 @@ export function DataTable({
 }) {
   const location = useLocation();
   const currentRoute = location.pathname;
-  console.log(data);
   const filteredData = data.filter((item) =>
     //apply full filter features when in this route
     currentRoute === "/dashboard/orderManagement"
       ? item[filterBy]?.toLowerCase().includes(searchTerm.toLowerCase())
-      : item.customer?.toLowerCase().includes(searchTerm.toLowerCase())
+      : item.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.customer?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
   // Get items for the current page
@@ -38,7 +40,6 @@ export function DataTable({
   const currentItems = showFooter
     ? filteredData?.slice(startIndex, endIndex)
     : filteredData;
-  console.log(currentItems);
   const renderPagination = () => {
     const pages = [];
     for (let i = 1; i <= totalPages; i++) {

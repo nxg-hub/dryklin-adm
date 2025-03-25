@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { useLocation } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const SearchFilter = ({ onSearch, filters }) => {
   const location = useLocation();
@@ -18,7 +19,17 @@ const SearchFilter = ({ onSearch, filters }) => {
       currentRoute === "/dashboard/orderManagement" &&
       selectedFilter === ""
     ) {
-      alert(" Please Select a filter Option.");
+      Swal.fire({
+        title: "Please Select a Filter Option",
+        confirmButtonText: "OK",
+        buttonsStyling: false, // Disable default styling
+        customClass: {
+          popup: "p-3 rounded-lg shadow-lg", // Popup container styling
+          title: "text-sm font-bold text-[#E86317]", // Title styling
+          confirmButton:
+            "bg-[#E86317] hover:bg-[#d45510] text-white px-4 py-2 rounded font-bold", // Button styling
+        },
+      });
     }
   };
   const handleFilterChange = (event) => {

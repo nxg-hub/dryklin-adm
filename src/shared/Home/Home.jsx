@@ -3,9 +3,25 @@ import { DataTable } from "../Table/data-table.jsx";
 import { StatusBadge } from "../Status-Badge/status-badge.jsx";
 import { AnalyticsChart } from "../Chart/analytics-chart.jsx";
 import { SectionHeader } from "../Section-Header/section-header.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrders } from "../../redux/OrderMangementSlice.jsx";
 
 export default function Home() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const dispatch = useDispatch();
+  const orders = useSelector((state) => state.orderManagement.orders);
+  const loading = useSelector((state) => state.orderManagement.loading);
+  const error = useSelector((state) => state.orderManagement.error);
+  const success = useSelector((state) => state.orderManagement.success);
+  const sortedOrders = [...orders].reverse().slice(0, 10);
+  // console.log(sortedOrders);
+  useEffect(() => {
+    if (success) {
+      return;
+    }
+    dispatch(fetchOrders());
+  }, []);
   // DUMMY data for the dashboard
   const statsData = [
     { title: "Total No. of Users", value: "2,105" },
@@ -14,113 +30,10 @@ export default function Home() {
     { title: "Total No. of Delivery Agents", value: "1,032" },
   ];
 
-  const ordersData = [
-    {
-      id: "0081727",
-      customer: "Chinedu Okafor",
-      email: "olivia@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "NEW",
-      orderStatusVariant: "new",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Amina Bello",
-      email: "phoenix@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PROCESSING",
-      paymentStatusVariant: "processing",
-    },
-    {
-      id: "0081727",
-      customer: "Emeka Nwosu",
-      email: "lana@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Fatima Abubakar",
-      email: "demi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PENDING",
-      paymentStatusVariant: "pending",
-    },
-    {
-      id: "0081727",
-      customer: "Tunde Adeyemi",
-      email: "candice@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ngozi Ibe",
-      email: "natali@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "CANCELLED",
-      orderStatusVariant: "cancelled",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ifeoma Uche",
-      email: "drew@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Kelechi Eze",
-      email: "orlando@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Zainab Ibrahim",
-      email: "andi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chijioke Obi",
-      email: "kate@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-  ];
-
   const orderColumns = [
     { key: "id", title: "Order ID" },
-    { key: "customer", title: "Customer Name" },
-    { key: "email", title: "Email address" },
+    { key: "customerName", title: "Customer Name" },
+    { key: "customerEmail", title: "Email address" },
     { key: "serviceType", title: "Service Type" },
     {
       key: "orderStatus",
@@ -195,7 +108,6 @@ export default function Home() {
     { id: "orders", label: "Order Placements" },
   ];
   const yAxis = [100, 75, 50, 25, 0];
-  const [searchTerm, setSearchTerm] = useState("");
   return (
     <div className="container mx-auto py-6 px-4">
       {/* StatISTICs Cards */}
@@ -206,39 +118,51 @@ export default function Home() {
       </div>
 
       {/* Recent Orders */}
-      <div className="mb-8">
-        <SectionHeader
-          title="Recent Orders"
-          actionLink={{ text: "See All", href: "#" }}
-        />
-        <DataTable
-          columns={orderColumns}
-          // showFooter={true}
-          searchTerm={searchTerm}
-          showFooter={false}
-          data={ordersData}
-          actionColumn={{
-            title: "",
-            render: (row) => (
-              <a href="#" className="text-[#e86317] text-sm hover:underline">
-                View Details
-              </a>
-            ),
-          }}
-          onRowClick={(row) => console.log("Row clicked:", row)}
-        />
-      </div>
+      {loading ? (
+        <h2 className="text-center">Loading...</h2>
+      ) : !loading && error ? (
+        <h2 className="text-center">
+          Something went wrong, check internet connection
+        </h2>
+      ) : (
+        <>
+          <div className="mb-8">
+            <SectionHeader
+              title="Recent Orders"
+              actionLink={{ text: "See All", href: "#" }}
+            />
+            <DataTable
+              columns={orderColumns}
+              // showFooter={true}
+              searchTerm={searchTerm}
+              showFooter={false}
+              data={sortedOrders}
+              actionColumn={{
+                title: "",
+                render: (row) => (
+                  <a
+                    href="#"
+                    className="text-[#e86317] text-sm hover:underline">
+                    View Details
+                  </a>
+                ),
+              }}
+              onRowClick={(row) => console.log("Row clicked:", row)}
+            />
+          </div>
 
-      {/* Analytics */}
-      <AnalyticsChart
-        title="Analytics"
-        tabs={analyticsTabs}
-        defaultTab="login"
-        data={analyticsData}
-        onPeriodChange={(period) => console.log("Period changed:", period)}
-        yAxis={yAxis}
-        type="bar"
-      />
+          {/* Analytics */}
+          <AnalyticsChart
+            title="Analytics"
+            tabs={analyticsTabs}
+            defaultTab="login"
+            data={analyticsData}
+            onPeriodChange={(period) => console.log("Period changed:", period)}
+            yAxis={yAxis}
+            type="bar"
+          />
+        </>
+      )}
     </div>
   );
 }
