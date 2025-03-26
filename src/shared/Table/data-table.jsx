@@ -44,9 +44,9 @@ export function DataTable({
     //apply full filter features when in this route
     currentRoute === "/dashboard/orderManagement"
       ? item[filterBy]?.toLowerCase().includes(searchTerm.toLowerCase())
-      : item.customer?.toLowerCase().includes(searchTerm.toLowerCase())
-      || item.company?.toLowerCase().includes(searchTerm.toLowerCase())
-      || item.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      : item.firstName?.toLowerCase().includes(searchTerm.toLowerCase())
+      || item.companyName?.toLowerCase().includes(searchTerm.toLowerCase())
+      || item.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
 
 
   );

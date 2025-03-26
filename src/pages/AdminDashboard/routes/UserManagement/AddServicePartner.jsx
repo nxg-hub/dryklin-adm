@@ -1,11 +1,77 @@
-import React from "react";
+import React, { useState } from "react";
 import { Field, Formik, Form, ErrorMessage } from 'formik';
 import { X } from "lucide-react"; // Close button icon
+import FeedbackModal from "../../../../components/modal";
 
-
+const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
+const ADD_SP_URL = import.meta.env.VITE_ADD_SERVICE_PARTNER
 
 const AddServicePartner = ({isOpen, onClose}) => {
 
+  const [isLoading, setIsLoading] = useState (false)
+  const [modalConfig, setModalConfig] = useState({
+    show: false,
+    type: "success",
+    title: "",
+    description: "",
+});
+
+  const handleSubmit = async (values) => {
+    
+    const requestBody = {
+      companyName: values.companyName,
+      contactPersonName: values.contactPersonName,
+      email: values.email,
+      phoneNumber: values.phoneNumber,
+      address: values.address
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}${ADD_SP_URL}`, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      const result = await response.json();
+      console.log (result)
+  
+if (response.ok) {
+  setModalConfig({
+    show: true,
+    type: "success",
+    title: "Servive Partner Added",
+    description: response.message || "You have been successfully added a new service partner.",
+});
+} else {
+setModalConfig({
+    show: true,
+    type: "error",
+    title: "Action failed",
+    description: response.message || "Failed to add service partner.",
+    redirectPath: null,
+});
+}
+} catch (err) {
+const errorMessage = err.response?.data?.message || "An error occurred. Please try again later.";
+
+setModalConfig({
+show: true,
+type: "error",
+title: "Error",
+description: errorMessage,
+redirectPath: null,
+});
+} finally {
+setIsLoading(false);
+}
+};
+
+const closeModal = () => {
+setModalConfig({ ...modalConfig, show: false });
+};
     return (
       <div className="fixed inset-0 flex items-center justify-center border-2 border-[#a0a0a0] rounded-md overflow-y-auto p-4 z-50">
          
@@ -21,7 +87,7 @@ const AddServicePartner = ({isOpen, onClose}) => {
         </h2>
        
         <Formik
-          initialValues={{ email: "", name: "", phone: "", amount: "", project: "" }}
+          initialValues={{ email: "", companyName: "", phoneNumber: "", address: "", contactPersonName: "" }}
           onSubmit={(values) => console.log(values)}
         >
           {({ isSubmitting }) => (
@@ -34,11 +100,11 @@ const AddServicePartner = ({isOpen, onClose}) => {
                   <label className="block text-md font-bold mb-1">Company's Name</label>
                   <Field
                     type="text"
-                    name="CompanyName"
+                    name="companyName"
                     placeholder="Input Company's Name"
                     className="w-full p-3 border border-gray-600 rounded-lg"
                   />
-                  <ErrorMessage name="CompanyName" component="div" className="text-red-500 text-sm" />
+                  <ErrorMessage name="companyName" component="div" className="text-red-500 text-sm" />
                 </div>
     
                 <div className="flex flex-col w-1/2">
@@ -59,22 +125,22 @@ const AddServicePartner = ({isOpen, onClose}) => {
                   <label className="block text-md font-bold mb-1">Phone Number</label>
                   <Field
                     type="text"
-                    name="phone"
+                    name="phoneNumber"
                     placeholder="Phone Number"
                     className="w-full p-3 border border-gray-600 rounded-lg"
                   />
-                  <ErrorMessage name="phone" component="div" className="text-red-500 text-sm" />
+                  <ErrorMessage name="phoneNumber" component="div" className="text-red-500 text-sm" />
                 </div>
     
                 <div className="flex flex-col w-1/2">
                   <label className="block text-md font-bold mb-1">Conatact Person</label>
                   <Field
                     type="text"
-                    name="contact"
+                    name="contactPersonName"
                     placeholder="Input Contact Person's Name"
                     className="w-full p-3 border border-gray-600 rounded-lg"
                   />
-                  <ErrorMessage name="contact" component="div" className="text-red-500 text-sm" />
+                  <ErrorMessage name="contactPersonName" component="div" className="text-red-500 text-sm" />
                 </div>
               </div>
     
@@ -93,6 +159,7 @@ const AddServicePartner = ({isOpen, onClose}) => {
               {/* Submit Button */}
               <button
                 type="submit"
+                onClick={handleSubmit}
                    className="bg-[#E85C19] text-white px-15 mt-3 py-5 rounded-lg hover:bg-[#c74e10] transition "
                 disabled={isSubmitting}
               >
@@ -103,6 +170,18 @@ const AddServicePartner = ({isOpen, onClose}) => {
         </Formik>
        
       </div>
+       {modalConfig.show && (
+                      <FeedbackModal
+                          type={modalConfig.type}
+                          title={modalConfig.title}
+                          description={modalConfig.description}
+                          buttonText={modalConfig.type === "success" ? "Continue" : "Try Again"}
+                          redirectPath={modalConfig.redirectPath}
+                          onClose={closeModal}
+                          onButtonClick={modalConfig.type === "success" ? null : closeModal}
+                          primaryColor="#E85C13"
+                      />
+                  )}
     </div>
     
 

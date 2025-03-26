@@ -8,12 +8,17 @@ import { Checkbox } from "../../components/checkbox.jsx";
 import FeedbackModal from "../../components/modal.jsx";
 import apiService from "../../services/apiService.js";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { fetchUser } from "../../redux/UserSlice.jsx";
+import { fetchAgents} from "../../redux/UserSlice.jsx";
+import { fetchServicePartners } from "../../redux/UserSlice.jsx";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useDispatch();
     const [modalConfig, setModalConfig] = useState({
         show: false,
         type: "success",
@@ -39,7 +44,10 @@ export default function LoginPage() {
                     sessionStorage.setItem("token", response.data.token);
                     sessionStorage.setItem("sessionId", response.data.sessionId);
                 }
-
+                  dispatch (fetchUser());
+                  dispatch (fetchAgents());
+                  dispatch (fetchServicePartners())
+                  
                 setModalConfig({
                     show: true,
                     type: "success",
