@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Field, Formik, Form, ErrorMessage } from 'formik';
 import { X } from "lucide-react"; // Close button icon
 import FeedbackModal from "../../../../components/modal";
+import { fetchServicePartners } from "../../../../redux/UserSlice";
+import { useDispatch } from "react-redux"
+
 
 const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
 const ADD_SP_URL = import.meta.env.VITE_ADD_SERVICE_PARTNER
@@ -9,6 +12,8 @@ const ADD_SP_URL = import.meta.env.VITE_ADD_SERVICE_PARTNER
 const AddServicePartner = ({isOpen, onClose}) => {
 
   const [isLoading, setIsLoading] = useState (false)
+    const dispatch = useDispatch();
+  
   const [modalConfig, setModalConfig] = useState({
     show: false,
     type: "success",
@@ -17,6 +22,8 @@ const AddServicePartner = ({isOpen, onClose}) => {
 });
 
   const handleSubmit = async (values) => {
+    setIsLoading(true)
+
     
     const requestBody = {
       companyName: values.companyName,
@@ -38,13 +45,19 @@ const AddServicePartner = ({isOpen, onClose}) => {
       const result = await response.json();
       console.log (result)
   
-if (response.ok) {
+if (response.ok && result.id) {
   setModalConfig({
     show: true,
     type: "success",
     title: "Servive Partner Added",
     description: response.message || "You have been successfully added a new service partner.",
+    onClose
 });
+setTimeout(() => {
+    onClose();  // ✅ Properly closing the modal
+  }, 2000);  // Wait for 2 seconds before closing (optional)
+
+  dispatch (fetchServicePartners());
 } else {
 setModalConfig({
     show: true,
@@ -55,6 +68,8 @@ setModalConfig({
 });
 }
 } catch (err) {
+  console.error("Catch Error:", err);
+
 const errorMessage = err.response?.data?.message || "An error occurred. Please try again later.";
 
 setModalConfig({
@@ -75,12 +90,13 @@ setModalConfig({ ...modalConfig, show: false });
     return (
       <div className="fixed inset-0 flex items-center justify-center border-2 border-[#a0a0a0] rounded-md overflow-y-auto p-4 z-50">
          
-      <div className="relative bg-white p-11 rounded shadow-lg w-[900px] max-h-[120%] overflow-y-auto">
-      <button
-          className="absolute top-1 border border-gray-300 rounded-full p-2 right-1 text-gray-700 hover:text-red-500"
-          onClick={onClose}
-        >
-          <X size={25} />
+        
+           <div className="relative bg-white p-11 rounded shadow-lg w-[900px] max-h-[120%] overflow-y-auto">
+           <button
+               className="absolute top-3 border border-gray-700  rounded-full p-2 right-2 text-gray-700 hover:text-red-500"
+               onClick={onClose}
+             >
+               <X size={25} />
         </button>
       <h2 className="text-xl text-[#E85C19] font-semibold mb-4">
         Add Service Employee
@@ -88,7 +104,7 @@ setModalConfig({ ...modalConfig, show: false });
        
         <Formik
           initialValues={{ email: "", companyName: "", phoneNumber: "", address: "", contactPersonName: "" }}
-          onSubmit={(values) => console.log(values)}
+          onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
             <Form className="space-y-4">
@@ -157,14 +173,14 @@ setModalConfig({ ...modalConfig, show: false });
               </div>
     
               {/* Submit Button */}
+              <div className="flex justify-end">
               <button
                 type="submit"
-                onClick={handleSubmit}
-                   className="bg-[#E85C19] text-white px-15 mt-3 py-5 rounded-lg hover:bg-[#c74e10] transition "
-                disabled={isSubmitting}
-              >
-                Submit
+                className="bg-[#E85C19] flex justify-end text-white font-bold px-15 mt-3 py-5 rounded-lg hover:bg-[#c74e10] transition "
+                disabled={isLoading}>
+                  {isLoading ? 'Submitting...' : 'Submit'}              
               </button>
+              </div>
             </Form>
           )}
         </Formik>

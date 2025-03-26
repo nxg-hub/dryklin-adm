@@ -13,7 +13,6 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (_, { rejectWi
       headers: {
         'Content-Type': 'application/json',
       },
-      mode: 'no-cors'
 
     });
 
@@ -57,7 +56,6 @@ export const fetchAgents = createAsyncThunk('user/fetchAgents', async (_, { reje
         headers: {
           'Content-Type': 'application/json',
         },
-        mode: 'no-cors'
       });
   
       const data = await response.json();

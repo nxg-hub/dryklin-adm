@@ -50,7 +50,6 @@ export function DataTable({
 
 
   );
-  console.log (data)
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
   // Get items for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -60,7 +59,6 @@ export function DataTable({
     ? filteredData?.slice(startIndex, endIndex)
     : filteredData;
 
-    console.log(currentItems, showFooter)
   const renderPagination = () => {
     const pages = [];
     for (let i = 1; i <= totalPages; i++) {

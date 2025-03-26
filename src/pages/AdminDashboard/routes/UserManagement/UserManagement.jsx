@@ -5,7 +5,10 @@ import AddServicePartner from "./AddServicePartner";
 import AddAgent from "./AddAgent";
 import { Link, useNavigate } from 'react-router-dom';
 import avatar from '../../../../assets/avatar.png'
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux"
+import { fetchWalletDetails } from "../../../../redux/WalletSlice";
+import { fetchAgents } from "../../../../redux/UserSlice";
+import { fetchServicePartners } from "../../../../redux/UserSlice";
 
 
 
@@ -14,7 +17,9 @@ const UserManagement = () => {
   const [isAddSPModalOpen, setIsAddSPModalOpen] = useState('')
   const [isAddAgentModalOpen, setIsAddAgentModalOpen] = useState('')
   const [currentPage, setCurrentPage] = useState(1);
-  const { users, servicePartners, agents, loading, error } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const walletBalances = useSelector((state) => state.wallet.walletBalances);
+  const { user, servicePartners, agents, loading, error } = useSelector((state) => state.user);
 
   const navigate = useNavigate();
 
@@ -32,39 +37,23 @@ const UserManagement = () => {
   const handleAddAgentClick = () => {
     setIsAddAgentModalOpen(true)
   }
-  const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
-  const AGENTS_URL = import.meta.env.VITE_GET_ALL_AGENTS;
-
   
- useEffect(() => {
-    const fetchAgents = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}${AGENTS_URL}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+useEffect(() => {
+  user.forEach((user) => {
+    if (user.walletId && !walletBalances[user.walletId]) {
+      // dispatch(fetchWalletDetails(user.walletId));
+      // dispatch (fetchServicePartners())
+    }
+  });
+}, [user, dispatch, walletBalances]);
 
-        const data = await response.json();
-        console.log('data:', data);
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to fetch Agents');
-        }
-      } catch (error) {
-        console.error('Error fetching agents:', error.message);
-      }
-    };
-
-    fetchAgents();
-  }, []);
   const usersColumns = [
     {
       key: "firstName",
       title: "Customer Name",
-      render: (users, row) => {
-        console.log("Users:", row, users); // Debugging to check the structure of row
+      render: (user, row) => {
+
+        return (
 
         <div className="flex items-center gap-3">
           <img
@@ -72,14 +61,24 @@ const UserManagement = () => {
             
             className="w-10 h-10 rounded-full object-cover"
           />
-            <span>{row?.firstName || "N/A"} {row?.lastName || ""}</span>
+            <span>{row?.firstName} {row?.lastName }</span>
             </div>
+        )
       },
     },    { key: "id", title: "Customer ID No" },
     { key: "email", title: "Email address" },
     { key: "phoneNumber", title: "Contact Number" },
-    // { key: "balance", title: "Wallet Balance" },
-    
+    {
+      key: "balance",
+      title: "Wallet Balance",
+      render: (user, row) => (
+        <span>
+          {walletBalances[row.walletId] !== undefined
+            ? `₦${walletBalances[row.walletId]}`
+            : "NIL"}
+        </span>
+      ),
+    },    
   ]
  
   const SPColumns = [
@@ -92,10 +91,9 @@ return (
         <div className="flex items-center gap-3">
           <img
             src={row.profilePic || avatar} // Get the profile picture from row data
-            alt={customer}
             className="w-10 h-10 rounded-full object-cover"
           />
-          <span>{customer}</span> {/* Customer name next to image */}
+          <span>{row?.companyName}</span> {/* Customer name next to image */}
         </div>
 )
 },
@@ -111,16 +109,15 @@ return (
         key: "fullName",
         title: "Agent's name",
         render: (agents, row) => {
-          console.log("Agents:", row, agents); // Debugging to check the structure of row
+          console.log("Agents:", row, agents); 
 
           return (
           <div className="flex items-center gap-3">
             <img
-            src={row.profilePic || avatar} // Get the profile picture from row data
-            alt={customer}
-              className="w-10 h-10 rounded-full object-cover"
+            src={row.profilePic || avatar} 
+              className="w-8 h-8 rounded-full object-cover"
             />
-            <span>{row?.fullName}</span> {/* Customer name next to image */}
+            <span>{row?.fullName}</span>
           </div>
           )
         },
@@ -128,12 +125,6 @@ return (
       { key: "email", title: "Email address" },
       { key: "phoneNumber", title: "Contact Number" },
        ]
-  
-  // Define column and data mappings
- 
-  console.log("Active Section:", activeSection);
-  console.log("Service Partners:", servicePartners); // Debugging to check the structure of row
-
   
 
 
@@ -194,7 +185,7 @@ return (
     [] // Default to an empty array or your fallback case
   }
   data={
-    activeSection === "customers" ? users :
+    activeSection === "customers" ? user :
     activeSection === "servicePartners" ? servicePartners :
     activeSection === "deliveryAgents" ? agents :
     []
