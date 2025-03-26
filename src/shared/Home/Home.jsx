@@ -3,9 +3,9 @@ import { DataTable } from "../Table/data-table.jsx";
 import { StatusBadge } from "../Status-Badge/status-badge.jsx";
 import { AnalyticsChart } from "../Chart/analytics-chart.jsx";
 import { SectionHeader } from "../Section-Header/section-header.jsx";
+import Header from "../Section-Header/header.jsx";
 
 export default function Home() {
-  // DUMMY data for the dashboard
   const statsData = [
     { title: "Total No. of Users", value: "2,105" },
     { title: "Total No. of Orders", value: "7,302" },
@@ -196,6 +196,12 @@ export default function Home() {
   const yAxis = [100, 75, 50, 25, 0];
   return (
     <div className="container mx-auto py-6 px-4">
+      <Header
+          title="My Account"
+          userName="{user.name}"
+          userEmail="{user.email}"
+          userImage="{user.profileImage}"
+      />
       {/* StatISTICs Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {statsData.map((stat, index) => (
