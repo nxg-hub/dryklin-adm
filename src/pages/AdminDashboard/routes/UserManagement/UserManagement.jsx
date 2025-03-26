@@ -68,7 +68,7 @@ const UserManagement = () => {
 
         <div className="flex items-center gap-3">
           <img
-            src={row.profilePic || avatar} // Get the profile picture from row data
+            src={row.profilePic || avatar} 
             
             className="w-10 h-10 rounded-full object-cover"
           />
