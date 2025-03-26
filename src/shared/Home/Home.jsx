@@ -6,6 +6,7 @@ import { SectionHeader } from "../Section-Header/section-header.jsx";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders } from "../../redux/OrderMangementSlice.jsx";
+import Header from "../Section-Header/header.jsx";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +24,7 @@ export default function Home() {
     dispatch(fetchOrders());
   }, []);
   // DUMMY data for the dashboard
+
   const statsData = [
     { title: "Total No. of Users", value: "2,105" },
     { title: "Total No. of Orders", value: "7,302" },
@@ -110,6 +112,12 @@ export default function Home() {
   const yAxis = [100, 75, 50, 25, 0];
   return (
     <div className="container mx-auto py-6 px-4">
+      <Header
+        title="My Account"
+        userName="{user.name}"
+        userEmail="{user.email}"
+        userImage="{user.profileImage}"
+      />
       {/* StatISTICs Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {statsData.map((stat, index) => (
