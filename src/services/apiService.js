@@ -3,7 +3,7 @@ import axios from 'axios';
 const apiService = {
     login: async (email, password) => {
         try {
-            const response = await axios.post('https://dryklin-be-90e602d8c93a.herokuapp.com/api/v1/auth/login', {
+            const response = await axios.post(`${import.meta.env.VITE_DRYKLIN_API_BASE_URL}${import.meta.env.VITE_DRYKLIN_LOGIN_ENDPOINT}`, {
                 email,
                 password,
             });

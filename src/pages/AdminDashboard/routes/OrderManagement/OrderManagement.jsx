@@ -1,819 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBadge } from "../../../../shared/Status-Badge/status-badge";
 import { DataTable } from "../../../../shared/Table/data-table";
 import { MdOutlineMenuBook } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import SearchFilter from "../../../../shared/Searchbar/SearchFilter";
+import { fetchOrders } from "../../../../redux/OrderMangementSlice";
 
 const OrderManagement = () => {
-  const store = useSelector((state) => state);
-  // console.log(store);
-  const ordersData = [
-    {
-      id: "0081727",
-      customer: "Chinedu Okafor",
-      email: "olivia@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "NEW",
-      orderStatusVariant: "new",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Amina Bello",
-      email: "phoenix@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PROCESSING",
-      paymentStatusVariant: "processing",
-    },
-    {
-      id: "0081727",
-      customer: "Emeka Nwosu",
-      email: "lana@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Fatima Abubakar",
-      email: "demi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PENDING",
-      paymentStatusVariant: "pending",
-    },
-    {
-      id: "0081727",
-      customer: "Tunde Adeyemi",
-      email: "candice@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ngozi Ibe",
-      email: "natali@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "CANCELLED",
-      orderStatusVariant: "cancelled",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ifeoma Uche",
-      email: "drew@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Kelechi Eze",
-      email: "orlando@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Zainab Ibrahim",
-      email: "andi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chijioke Obi",
-      email: "kate@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chinedu Okafor",
-      email: "olivia@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "NEW",
-      orderStatusVariant: "new",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Amina Bello",
-      email: "phoenix@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PROCESSING",
-      paymentStatusVariant: "processing",
-    },
-    {
-      id: "0081727",
-      customer: "Emeka Nwosu",
-      email: "lana@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Fatima Abubakar",
-      email: "demi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PENDING",
-      paymentStatusVariant: "pending",
-    },
-    {
-      id: "0081727",
-      customer: "Tunde Adeyemi",
-      email: "candice@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ngozi Ibe",
-      email: "natali@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "CANCELLED",
-      orderStatusVariant: "cancelled",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ifeoma Uche",
-      email: "drew@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ndu Eze",
-      email: "orlando@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Zainab Ibrahim",
-      email: "andi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chijioke Obi",
-      email: "kate@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chinedu Okafor",
-      email: "olivia@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "NEW",
-      orderStatusVariant: "new",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Amina Bello",
-      email: "phoenix@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PROCESSING",
-      paymentStatusVariant: "processing",
-    },
-    {
-      id: "0081727",
-      customer: "Emeka Nwosu",
-      email: "lana@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Fatima Abubakar",
-      email: "demi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PENDING",
-      paymentStatusVariant: "pending",
-    },
-    {
-      id: "0081727",
-      customer: "Tunde Adeyemi",
-      email: "candice@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ngozi Ibe",
-      email: "natali@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "CANCELLED",
-      orderStatusVariant: "cancelled",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ifeoma Uche",
-      email: "drew@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Kelechi Eze",
-      email: "orlando@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Zainab Ibrahim",
-      email: "andi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chijioke Obi",
-      email: "kate@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chinedu Okafor",
-      email: "olivia@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "NEW",
-      orderStatusVariant: "new",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Amina Bello",
-      email: "phoenix@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PROCESSING",
-      paymentStatusVariant: "processing",
-    },
-    {
-      id: "0081727",
-      customer: "Emeka Nwosu",
-      email: "lana@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Fatima Abubakar",
-      email: "demi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PENDING",
-      paymentStatusVariant: "pending",
-    },
-    {
-      id: "0081727",
-      customer: "Tunde Adeyemi",
-      email: "candice@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ngozi Ibe",
-      email: "natali@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "CANCELLED",
-      orderStatusVariant: "cancelled",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ifeoma Uche",
-      email: "drew@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ndu Eze",
-      email: "orlando@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Zainab Ibrahim",
-      email: "andi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chijioke Obi",
-      email: "kate@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chinedu Okafor",
-      email: "olivia@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "NEW",
-      orderStatusVariant: "new",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Amina Bello",
-      email: "phoenix@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PROCESSING",
-      paymentStatusVariant: "processing",
-    },
-    {
-      id: "0081727",
-      customer: "Emeka Nwosu",
-      email: "lana@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Fatima Abubakar",
-      email: "demi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PENDING",
-      paymentStatusVariant: "pending",
-    },
-    {
-      id: "0081727",
-      customer: "Tunde Adeyemi",
-      email: "candice@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ngozi Ibe",
-      email: "natali@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "CANCELLED",
-      orderStatusVariant: "cancelled",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ifeoma Uche",
-      email: "drew@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Kelechi Eze",
-      email: "orlando@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Zainab Ibrahim",
-      email: "andi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chijioke Obi",
-      email: "kate@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chinedu Okafor",
-      email: "olivia@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "NEW",
-      orderStatusVariant: "new",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Amina Bello",
-      email: "phoenix@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PROCESSING",
-      paymentStatusVariant: "processing",
-    },
-    {
-      id: "0081727",
-      customer: "Emeka Nwosu",
-      email: "lana@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Fatima Abubakar",
-      email: "demi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PENDING",
-      paymentStatusVariant: "pending",
-    },
-    {
-      id: "0081727",
-      customer: "Tunde Adeyemi",
-      email: "candice@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ngozi Ibe",
-      email: "natali@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "CANCELLED",
-      orderStatusVariant: "cancelled",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ifeoma Uche",
-      email: "drew@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ndu Eze",
-      email: "orlando@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Zainab Ibrahim",
-      email: "andi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chijioke Obi",
-      email: "kate@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chinedu Okafor",
-      email: "olivia@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "NEW",
-      orderStatusVariant: "new",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Amina Bello",
-      email: "phoenix@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PROCESSING",
-      paymentStatusVariant: "processing",
-    },
-    {
-      id: "0081727",
-      customer: "Emeka Nwosu",
-      email: "lana@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Fatima Abubakar",
-      email: "demi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PENDING",
-      paymentStatusVariant: "pending",
-    },
-    {
-      id: "0081727",
-      customer: "Tunde Adeyemi",
-      email: "candice@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ngozi Ibe",
-      email: "natali@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "CANCELLED",
-      orderStatusVariant: "cancelled",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ifeoma Uche",
-      email: "drew@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Kelechi Eze",
-      email: "orlando@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Zainab Ibrahim",
-      email: "andi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chijioke Obi",
-      email: "kate@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chinedu Okafor",
-      email: "olivia@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "NEW",
-      orderStatusVariant: "new",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Amina Bello",
-      email: "phoenix@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PROCESSING",
-      paymentStatusVariant: "processing",
-    },
-    {
-      id: "0081727",
-      customer: "Emeka Nwosu",
-      email: "lana@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Fatima Abubakar",
-      email: "demi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PENDING",
-      paymentStatusVariant: "pending",
-    },
-    {
-      id: "0081727",
-      customer: "Tunde Adeyemi",
-      email: "candice@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "IN PROGRESS",
-      orderStatusVariant: "progress",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ngozi Ibe",
-      email: "natali@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "CANCELLED",
-      orderStatusVariant: "cancelled",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ifeoma Uche",
-      email: "drew@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Ndu Eze",
-      email: "orlando@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Zainab Ibrahim",
-      email: "andi@untitledui.com",
-      serviceType: "Quick Pickup",
-      orderStatus: "SUCCESSFUL",
-      orderStatusVariant: "success",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
-    {
-      id: "0081727",
-      customer: "Chijioke Obi",
-      email: "kate@untitledui.com",
-      serviceType: "Normal/Express",
-      orderStatus: "COMPLETED",
-      orderStatusVariant: "completed",
-      paymentStatus: "PAID",
-      paymentStatusVariant: "paid",
-    },
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filterBy, setFilterBy] = useState("customerName"); // Default filter
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const dispatch = useDispatch();
+  const orders = useSelector((state) => state.orderManagement.orders);
+  const loading = useSelector((state) => state.orderManagement.loading);
+  const error = useSelector((state) => state.orderManagement.error);
+  const success = useSelector((state) => state.orderManagement.success);
+
+  const sortedOrders = orders.slice().reverse();
+
+  const onPageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  // List of filters
+  const filters = [
+    { label: "Select", value: "" },
+    { label: "Customer", value: "customerName" },
+    { label: "ID", value: "id" },
+    { label: "Payment Status", value: "paymentStatus" },
+    { label: "Order Status", value: "orderStatus" },
   ];
+
+  // Handle search and filter changes
+  const handleSearch = (term, filter) => {
+    setSearchTerm(term);
+    setFilterBy(filter);
+  };
+  useEffect(() => {
+    if (success) {
+      return;
+    } else {
+      dispatch(fetchOrders());
+    }
+  }, []);
 
   const orderColumns = [
     { key: "id", title: "Order ID" },
-    { key: "customer", title: "Customer Name" },
-    { key: "email", title: "Email address" },
+    { key: "customerName", title: "Customer Name" },
+    { key: "customerEmail", title: "Email address" },
     { key: "serviceType", title: "Service Type" },
     {
       key: "orderStatus",
@@ -831,11 +66,6 @@ const OrderManagement = () => {
     },
   ];
 
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const onPageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
   return (
     <div>
       <h2 className="text-2xl font-bold mb-11 flex items-center ">
@@ -845,24 +75,40 @@ const OrderManagement = () => {
           {ordersData.length}
         </span> */}
       </h2>
-      <div>
-        <DataTable
-          columns={orderColumns}
-          showFooter={true}
-          data={ordersData}
-          currentPage={currentPage}
-          onPageChange={onPageChange}
-          actionColumn={{
-            title: "",
-            render: (row) => (
-              <a href="#" className="text-[#e86317] text-sm hover:underline">
-                View Details
-              </a>
-            ),
-          }}
-          onRowClick={(row) => console.log("Row clicked:", row)}
-        />
-      </div>
+
+      {loading ? (
+        <h2 className="text-center">Loading...</h2>
+      ) : !loading && error ? (
+        <h2 className="text-center">Something went wrong</h2>
+      ) : (
+        <>
+          {/* Search & Filter Component */}
+          <SearchFilter onSearch={handleSearch} filters={filters} />
+          <div>
+            <DataTable
+              columns={orderColumns}
+              filterBy={filterBy}
+              showFooter={true}
+              data={sortedOrders}
+              searchTerm={searchTerm}
+              currentPage={currentPage}
+              onPageChange={onPageChange}
+              actionColumn={{
+                title: "",
+                render: (row) => (
+                  <a
+                    href="#"
+                    className="text-[#e86317] text-sm hover:underline">
+                    {console.log(row)}
+                    View Details
+                  </a>
+                ),
+              }}
+              onRowClick={(row) => console.log("Row clicked:", row)}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

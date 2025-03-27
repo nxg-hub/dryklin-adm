@@ -16,49 +16,30 @@ export function DataTable({
   showPagination = true,
   currentPage,
   itemsPerPage = 10,
-
+  filterBy,
+  searchTerm,
   onPageChange,
   showFooter = true,
 }) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterBy, setFilterBy] = useState("customer"); // Default filter
   const location = useLocation();
   const currentRoute = location.pathname;
-
-  // List of filters
-  const filters = [
-    { label: "Select", value: "" },
-    { label: "Customer", value: "customer" },
-    { label: "ID", value: "id" },
-    { label: "Payment Status", value: "paymentStatus" },
-    { label: "Order Status", value: "orderStatus" },
-  ];
-
-  // Handle search and filter changes
-  const handleSearch = (term, filter) => {
-    setSearchTerm(term);
-    setFilterBy(filter);
-  };
-
   const filteredData = data.filter((item) =>
     //apply full filter features when in this route
     currentRoute === "/dashboard/orderManagement"
       ? item[filterBy]?.toLowerCase().includes(searchTerm.toLowerCase())
-      : item.firstName?.toLowerCase().includes(searchTerm.toLowerCase())
-      || item.companyName?.toLowerCase().includes(searchTerm.toLowerCase())
-      || item.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
-
-
+      : item.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
   // Get items for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-
-  const currentItems = showFooter 
+console.log ("data:" , data)
+  const currentItems = showFooter
     ? filteredData?.slice(startIndex, endIndex)
     : filteredData;
-
   const renderPagination = () => {
     const pages = [];
     for (let i = 1; i <= totalPages; i++) {
@@ -115,8 +96,6 @@ export function DataTable({
 
   return (
     <div className="overflow-x-auto">
-      {/* Search & Filter Component */}
-      {showFooter && <SearchFilter onSearch={handleSearch} filters={filters} />}
       <div className="border border-[#e4e7ec] rounded-lg">
         <table className="w-full">
           <thead>

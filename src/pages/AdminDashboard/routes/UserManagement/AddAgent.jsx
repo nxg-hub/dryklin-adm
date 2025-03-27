@@ -11,6 +11,8 @@ const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
 const ADD_AGENT_URL = import.meta.env.VITE_ADD_AGENT
 
 const AddAgent = ({isOpen, onClose}) => {
+    const [isLoading, setIsLoading] = useState (false)
+  
   const dispatch = useDispatch();
 
   const [modalConfig, setModalConfig] = useState({
@@ -21,6 +23,7 @@ const AddAgent = ({isOpen, onClose}) => {
   });
   
     const handleSubmit = async (values) => {
+      setIsLoading(true)
       console.log("Form values:", values); // Debugging
 
 
@@ -59,8 +62,8 @@ const AddAgent = ({isOpen, onClose}) => {
 
   });
   setTimeout(() => {
-    onClose();  // ✅ Properly closing the modal
-  }, 2000);  // Wait for 2 seconds before closing (optional)
+    onClose();  
+  }, 2000);  
 
   dispatch (fetchAgents());
 
@@ -86,7 +89,8 @@ const AddAgent = ({isOpen, onClose}) => {
   redirectPath: null,
   });
   } finally {
-  }
+    setIsLoading(false);
+    }
   };
   
   const closeModal = () => {
@@ -182,9 +186,10 @@ const AddAgent = ({isOpen, onClose}) => {
               <button
                 type="submit"
                    className="bg-[#E85C19] flex justify-end text-white px-15 mt-3 py-5 rounded-lg hover:bg-[#c74e10] transition "
-              >
-                Submit
-              </button>
+                   disabled={isLoading}>
+
+                  {isLoading ? 'Submitting...' : 'Submit'}              
+                  </button>
               </div>
             </Form>
           )}

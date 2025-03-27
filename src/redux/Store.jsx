@@ -4,6 +4,8 @@ import { persistReducer, persistStore } from "redux-persist";
 import { combineReducers } from "redux";
 import userReducer from './UserSlice'
 import walletReducer from './WalletSlice'
+import orderReducer from "./OrderMangementSlice";
+
 const persistConfig = {
   key: "root",
   storage,
@@ -15,7 +17,9 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   user: userReducer,
-  wallet: walletReducer
+  wallet: walletReducer,
+
+  orderManagement: orderReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

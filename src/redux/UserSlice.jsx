@@ -71,18 +71,38 @@ export const fetchAgents = createAsyncThunk('user/fetchAgents', async (_, { reje
   });
 // Initial state
 const initialState = {
-    users: [],
-    servicePartners: [],
-    agents: [],
-      success: false,
+  selectedUser: null, // Store the selected user details
+  users: [],
+  servicePartners: [],
+  agents: [],
   loading: false,
   error: null,
 };
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    setUsers: (state, action) => {
+      state.users = action.payload;
+    },
+    setServicePartners: (state, action) => {
+      state.servicePartners = action.payload;
+    },
+    setAgents: (state, action) => {
+      state.agents = action.payload;
+    },
+    setSelectedUser: (state, action) => {
+      const { userId, data } = action.payload;
+      state.selectedUser =
+        state.users.find((u) => u.id === userId) ||
+        state.servicePartners.find((sp) => sp.id === userId) ||
+        state.agents.find((a) => a.id === userId) ||
+        data || null; // Use 'data' if not found in lists
+    },
+  },
+
+
   
   extraReducers: (builder) => {
     builder
@@ -131,5 +151,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { logOut } = userSlice.actions;
+export const { setUsers, setServicePartners, setAgents, setSelectedUser } = userSlice.actions;
 export default userSlice.reducer;
