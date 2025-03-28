@@ -28,15 +28,15 @@ export function DataTable({
     currentRoute === "/dashboard/orderManagement"
       ? item[filterBy]?.toLowerCase().includes(searchTerm.toLowerCase())
       : item.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.customer?.toLowerCase().includes(searchTerm.toLowerCase())
+        item.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
   // Get items for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-
+console.log ("data:" , data)
   const currentItems = showFooter
     ? filteredData?.slice(startIndex, endIndex)
     : filteredData;

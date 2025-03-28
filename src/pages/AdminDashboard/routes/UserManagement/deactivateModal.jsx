@@ -6,7 +6,10 @@ import { FaCheck } from "react-icons/fa";
 
 
 const DeactivateModal = ({onClose, back}) => {
-    // const [isAddAgentModalOpen, setIsAddAgentModalOpen] = useState('')
+
+  
+
+  
     
   
     return (

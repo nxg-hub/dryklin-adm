@@ -1,10 +1,101 @@
-import React from "react";
+import React, {useState} from "react";
 import { Field, Formik, Form, ErrorMessage } from 'formik';
 import { X } from "lucide-react"; // Close button icon
+import FeedbackModal from "../../../../components/modal";
+import { useDispatch, useSelector } from "react-redux"
+import { fetchAgents } from "../../../../redux/UserSlice";
 
 
+
+const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
+const ADD_AGENT_URL = import.meta.env.VITE_ADD_AGENT
 
 const AddAgent = ({isOpen, onClose}) => {
+    const [isLoading, setIsLoading] = useState (false)
+  
+  const dispatch = useDispatch();
+
+  const [modalConfig, setModalConfig] = useState({
+      show: false,
+      type: "success",
+      title: "",
+      description: "",
+  });
+  
+    const handleSubmit = async (values) => {
+      setIsLoading(true)
+      console.log("Form values:", values); // Debugging
+
+
+      const fullName = values.fullName || "";
+      const [firstName = "", lastName = ""] = fullName.trim().split(" ");
+      
+      // Reconstruct fullName before sending to the backend
+      const requestBody = {
+        fullName: `${values.firstName} ${values.lastName}`.trim(),
+        email: values.email,
+        phoneNumber: values.phoneNumber,
+        location: values.location
+      }
+      console.log("Request Body:", requestBody);
+
+      try {
+        const response = await fetch(`${API_BASE_URL}${ADD_AGENT_URL}`, {
+          method: 'POST', 
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody)
+        });
+  
+        const result = await response.json();
+        console.log (result)
+    
+  if (response.ok) {
+    setModalConfig({
+      show: true,
+      type: "success",
+      title: "Delivery Agent Added",
+      description: response.message || "You have been successfully added a new delivery agent.",
+      redirectPath: "/dashboard/users"
+
+
+  });
+  setTimeout(() => {
+    onClose();  
+  }, 2000);  
+
+  dispatch (fetchAgents());
+
+  
+
+  } else {
+  setModalConfig({
+      show: true,
+      type: "error",
+      title: "Action failed",
+      description: response.message || "Failed to add delivery agent.",
+      redirectPath: onClose,
+  });
+  }
+  } catch (err) {
+  const errorMessage = err.response?.data?.message || "An error occurred. Please try again later.";
+  
+  setModalConfig({
+  show: true,
+  type: "error",
+  title: "Error",
+  description: errorMessage,
+  redirectPath: null,
+  });
+  } finally {
+    setIsLoading(false);
+    }
+  };
+  
+  const closeModal = () => {
+  setModalConfig({ ...modalConfig, show: false });
+  };
 
     return (
       <div className="fixed inset-0 flex items-center justify-center border-2 border-[#a0a0a0] rounded-md overflow-y-auto p-4 z-50">
@@ -21,9 +112,9 @@ const AddAgent = ({isOpen, onClose}) => {
         </h2>
        
         <Formik
-          initialValues={{ email: "", name: "", phone: "", amount: "", project: "" }}
-          onSubmit={(values) => console.log(values)}
-        >
+          initialValues={{ email: "", firstName: "", lastName: "", phoneNumber: "", location: "" }}
+          onSubmit={handleSubmit}
+          >
           {({ isSubmitting }) => (
             <Form className="space-y-4">
               {/* First Row - Two Inputs */}
@@ -34,22 +125,22 @@ const AddAgent = ({isOpen, onClose}) => {
                   <label className="block text-md font-bold mb-1"> First Name</label>
                   <Field
                     type="text"
-                    name="CompanyName"
+                    name="firstName"
                     placeholder="Input Agent's First Name"
                     className="w-full p-3 border border-gray-600 rounded-lg"
                   />
-                  <ErrorMessage name="CompanyName" component="div" className="text-red-500 text-sm" />
+                  <ErrorMessage name="firstName" component="div" className="text-red-500 text-sm" />
                 </div>
     
                 <div className="flex flex-col w-1/2">
                    <label className="block text-md font-bold mb-1"> Last Name</label>
                   <Field
                     type="text"
-                    name="CompanyName"
+                    name="lastName"
                     placeholder="Input Agent's Last Name"
                     className="w-full p-3 border border-gray-600 rounded-lg"
                   />
-                  <ErrorMessage name="CompanyName" component="div" className="text-red-500 text-sm" />
+                  <ErrorMessage name="lastName" component="div" className="text-red-500 text-sm" />
                 </div>
               </div>
     
@@ -70,7 +161,7 @@ const AddAgent = ({isOpen, onClose}) => {
                 <label className="block text-md font-bold mb-1">Phone Number</label>
                   <Field
                     type="text"
-                    name="phone"
+                    name="phoneNumber"
                     placeholder="Phone Number"
                     className="w-full p-3 border border-gray-600 rounded-lg"
                   />
@@ -83,11 +174,11 @@ const AddAgent = ({isOpen, onClose}) => {
                 <label className="block text-md font-bold mb-1">Address</label>
                 <Field
                   as="textarea"
-                  name="address"
+                  name="location"
                   placeholder="Input Address"
                   className="w-full p-3 border border-gray-600 rounded-lg min-h-[120px] resize-none"
                 />
-                <ErrorMessage name="address" component="div" className="text-red-500 text-sm" />
+                <ErrorMessage name="location" component="div" className="text-red-500 text-sm" />
               </div>
     
               {/* Submit Button */}
@@ -95,16 +186,28 @@ const AddAgent = ({isOpen, onClose}) => {
               <button
                 type="submit"
                    className="bg-[#E85C19] flex justify-end text-white px-15 mt-3 py-5 rounded-lg hover:bg-[#c74e10] transition "
-                disabled={isSubmitting}
-              >
-                Submit
-              </button>
+                   disabled={isLoading}>
+
+                  {isLoading ? 'Submitting...' : 'Submit'}              
+                  </button>
               </div>
             </Form>
           )}
         </Formik>
        
       </div>
+       {modalConfig.show && (
+                            <FeedbackModal
+                                type={modalConfig.type}
+                                title={modalConfig.title}
+                                description={modalConfig.description}
+                                buttonText={modalConfig.type === "success" ? "Continue" : "Try Again"}
+                                redirectPath={modalConfig.redirectPath}
+                                onClose={closeModal}
+                                onButtonClick={modalConfig.type === "success" ? null : closeModal}
+                                primaryColor="#E85C13"
+                            />
+                        )}
     </div>
     
 
