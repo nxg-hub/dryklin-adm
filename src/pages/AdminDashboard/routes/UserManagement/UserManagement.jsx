@@ -21,6 +21,8 @@ const UserManagement = () => {
   const dispatch = useDispatch();
   const walletBalances = useSelector((state) => state.wallet.walletBalances);
   const { user, servicePartners, agents } = useSelector((state) => state.user);
+  const adminDetails = useSelector((state) => state.admin.adminDetails);
+
 
   const navigate = useNavigate();
 
@@ -170,9 +172,9 @@ return (
     <div className="container mx-auto py-6 px-4">
       <Header
         title="User Management"
-        userName="{user.name}"
-        userEmail="{user.email}"
-        userImage={user.profileImage  || avatar}
+        userName={adminDetails?.firstName}
+        userEmail={adminDetails?.email}
+        userImage={adminDetails?.profileImage  || avatar}
       />
       
       {/* Search & Filter Component */}

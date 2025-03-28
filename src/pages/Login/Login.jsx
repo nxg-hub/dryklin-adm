@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import { fetchUser } from "../../redux/UserSlice.jsx";
 import { fetchAgents} from "../../redux/UserSlice.jsx";
 import { fetchServicePartners } from "../../redux/UserSlice.jsx";
+import { fetchAdminDetails } from "../../redux/LoggedInAdminSlice.jsx";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -36,6 +37,8 @@ export default function LoginPage() {
         try {
             const response = await apiService.login(email, password);
 
+            localStorage.setItem('userEmail', email);
+
             if (response.status === "ACCEPTED") {
                 if (rememberMe) {
                     localStorage.setItem("token", response.data.token);
@@ -47,6 +50,8 @@ export default function LoginPage() {
                   dispatch (fetchUser());
                   dispatch (fetchAgents());
                   dispatch (fetchServicePartners())
+                  dispatch(fetchAdminDetails(email));
+
                   
                 setModalConfig({
                     show: true,

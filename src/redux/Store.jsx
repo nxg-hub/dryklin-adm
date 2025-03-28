@@ -5,20 +5,22 @@ import { combineReducers } from "redux";
 import userReducer from './UserSlice'
 import walletReducer from './WalletSlice'
 import orderReducer from "./OrderMangementSlice";
+import adminReducer from "./LoggedInAdminSlice"
 
 const persistConfig = {
   key: "root",
   storage,
   whitelist: [
     'user',
-    'wallet'
+    'wallet',
+    'admin'
   ],
 };
 
 const rootReducer = combineReducers({
   user: userReducer,
   wallet: walletReducer,
-
+admin: adminReducer,
   orderManagement: orderReducer,
 });
 
