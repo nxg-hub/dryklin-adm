@@ -27,7 +27,7 @@ export function DataTable({
     //apply full filter features when in this route
     currentRoute === "/dashboard/orderManagement"
       ? item[filterBy]?.toLowerCase().includes(searchTerm.toLowerCase())
-      : item.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      : item.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.customer?.toLowerCase().includes(searchTerm.toLowerCase())

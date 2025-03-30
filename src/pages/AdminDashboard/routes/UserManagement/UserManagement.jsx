@@ -3,7 +3,8 @@ import { FaSearch, FaPlus } from "react-icons/fa";
 import { DataTable } from "../../../../shared/Table/data-table";
 import AddServicePartner from "./AddServicePartner";
 import AddAgent from "./AddAgent";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router";
 import avatar from "../../../../assets/avatar.png";
 import SearchFilter from "../../../../shared/Searchbar/SearchFilter";
 
@@ -488,11 +489,11 @@ const UserManagement = () => {
         actionColumn={{
           title: "",
           render: (row) => (
-            <a
-              href="/dashboard/users/viewdetails"
+            <Link
+              to="/dashboard/users/viewdetails"
               className="text-[#e86317] text-sm hover:underline">
               View Details
-            </a>
+            </Link>
           ),
         }}
         onRowClick={(row) => console.log("Row clicked:", row)}

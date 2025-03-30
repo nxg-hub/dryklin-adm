@@ -1,6 +1,7 @@
 import React from "react";
 import { AnalyticsChart } from "../../../../shared/Chart/analytics-chart";
 import { StatCard } from "../../../../shared/Stat-Card/stat-card";
+import Header from "../../../../shared/Section-Header/header.jsx";
 
 const AnalyticsAndReports = () => {
   const statsData = [
@@ -165,9 +166,14 @@ const AnalyticsAndReports = () => {
   const reportYaxis = ["150", "125", "100", "75", "50", "25"];
   return (
     <div>
-      AnalyticsAndReports
+      <Header
+        title=" Analytics And Reports"
+        userName="{user.name}"
+        userEmail="{user.email}"
+        userImage="{user.profileImage}"
+      />
       {/* StatISTICs Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 mt-4">
         {statsData.map((stat, index) => (
           <StatCard key={index} title={stat.title} value={stat.value} />
         ))}

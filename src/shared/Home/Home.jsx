@@ -7,27 +7,29 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders } from "../../redux/OrderMangementSlice.jsx";
 import Header from "../Section-Header/header.jsx";
+import { setSelectedOrder } from "../../redux/OrderSlice.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const orders = useSelector((state) => state.orderManagement.orders);
   const loading = useSelector((state) => state.orderManagement.loading);
   const error = useSelector((state) => state.orderManagement.error);
   const success = useSelector((state) => state.orderManagement.success);
   const sortedOrders = [...orders].reverse().slice(0, 10);
-  // console.log(sortedOrders);
+
   useEffect(() => {
     if (success) {
       return;
     }
     dispatch(fetchOrders());
   }, []);
-  // DUMMY data for the dashboard
 
   const statsData = [
     { title: "Total No. of Users", value: "2,105" },
-    { title: "Total No. of Orders", value: "7,302" },
+    { title: "Total No. of Orders", value: orders.length },
     { title: "Total No. of Service Partners", value: "238" },
     { title: "Total No. of Delivery Agents", value: "1,032" },
   ];
@@ -41,14 +43,14 @@ export default function Home() {
       key: "orderStatus",
       title: "Order Status",
       render: (value, row) => (
-        <StatusBadge status={value} variant={row.orderStatusVariant} />
+        <StatusBadge status={value} variant={row.orderStatus} />
       ),
     },
     {
       key: "paymentStatus",
       title: "Payment Status",
       render: (value, row) => (
-        <StatusBadge status={value} variant={row.paymentStatusVariant} />
+        <StatusBadge status={value} variant={row.paymentStatus} />
       ),
     },
   ];
@@ -111,29 +113,29 @@ export default function Home() {
   ];
   const yAxis = [100, 75, 50, 25, 0];
   return (
-    <div className="container mx-auto py-6 px-4">
+    <div className="container mx-auto py-2 px-4">
       <Header
         title="My Account"
         userName="{user.name}"
         userEmail="{user.email}"
         userImage="{user.profileImage}"
       />
-      {/* StatISTICs Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {statsData.map((stat, index) => (
-          <StatCard key={index} title={stat.title} value={stat.value} />
-        ))}
-      </div>
 
       {/* Recent Orders */}
       {loading ? (
-        <h2 className="text-center">Loading...</h2>
+        <h2 className="text-center mt-4">Loading...</h2>
       ) : !loading && error ? (
-        <h2 className="text-center">
+        <h2 className="text-center mt-4">
           Something went wrong, check internet connection
         </h2>
       ) : (
         <>
+          {/* StatISTICs Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 mt-4">
+            {statsData.map((stat, index) => (
+              <StatCard key={index} title={stat.title} value={stat.value} />
+            ))}
+          </div>
           <div className="mb-8">
             <SectionHeader
               title="Recent Orders"
@@ -150,6 +152,11 @@ export default function Home() {
                 render: (row) => (
                   <a
                     href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      dispatch(setSelectedOrder(row)); // Store in Redux
+                      navigate("/dashboard/orderManagement/orderDetails"); // Navigate to details page
+                    }}
                     className="text-[#e86317] text-sm hover:underline">
                     View Details
                   </a>
