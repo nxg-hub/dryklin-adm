@@ -8,6 +8,7 @@ import { fetchOrders } from "../../../../redux/OrderMangementSlice";
 import Header from "../../../../shared/Section-Header/header.jsx";
 import { setSelectedOrder } from "../../../../redux/OrderSlice.jsx";
 import { useNavigate } from "react-router-dom";
+import avatar from "../../../../assets/avatar.png";
 
 const OrderManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,6 +20,7 @@ const OrderManagement = () => {
   const loading = useSelector((state) => state.orderManagement.loading);
   const error = useSelector((state) => state.orderManagement.error);
   const success = useSelector((state) => state.orderManagement.success);
+  const adminDetails = useSelector((state) => state.admin.adminDetails);
 
   const sortedOrders = orders.slice().reverse();
 
@@ -74,9 +76,9 @@ const OrderManagement = () => {
       <h2 className="text-2xl font-bold mb-11 flex items-center ">
         <Header
           title=" Order Management"
-          userName="{user.name}"
-          userEmail="{user.email}"
-          userImage="{user.profileImage}"
+          userName={adminDetails?.firstName}
+          userEmail={adminDetails?.email}
+          userImage={adminDetails?.profileImage || avatar}
         />
         {/* <span className="flex items-center ml-2.5 gap-2 font-light text-white text-[16px] px-3 py-2 rounded-full bg-[#F32749]  ">
           <MdOutlineMenuBook size={16} />

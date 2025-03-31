@@ -1,10 +1,8 @@
 "use client";
-
-import { useEffect, useState } from "react";
 import { Checkbox } from "../../components/checkbox.jsx";
 import Button from "../Buttons/Button.jsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import SearchFilter from "../Searchbar/SearchFilter.jsx";
+
 import { useLocation } from "react-router-dom";
 
 export function DataTable({
@@ -27,16 +25,17 @@ export function DataTable({
     //apply full filter features when in this route
     currentRoute === "/dashboard/orderManagement"
       ? item[filterBy]?.toLowerCase().includes(searchTerm.toLowerCase())
-      : item.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.customer?.toLowerCase().includes(searchTerm.toLowerCase())
+      : item.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.id?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
   // Get items for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-
+  // console.log("data:", data);
   const currentItems = showFooter
     ? filteredData?.slice(startIndex, endIndex)
     : filteredData;

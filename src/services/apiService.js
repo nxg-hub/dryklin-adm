@@ -3,7 +3,7 @@ import axios from 'axios';
 const apiService = {
     login: async (email, password) => {
         try {
-            const response = await axios.post(import.meta.env.VITE_DRYKLIN_LOGIN_ENDPOINT, {
+            const response = await axios.post(`${import.meta.env.VITE_DRYKLIN_API_BASE_URL}${import.meta.env.VITE_DRYKLIN_LOGIN_ENDPOINT}`, {
                 email,
                 password,
             });

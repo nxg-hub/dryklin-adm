@@ -9,16 +9,19 @@ import { fetchOrders } from "../../redux/OrderMangementSlice.jsx";
 import Header from "../Section-Header/header.jsx";
 import { setSelectedOrder } from "../../redux/OrderSlice.jsx";
 import { useNavigate } from "react-router-dom";
+import avatar from "../../assets/avatar.png";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const orders = useSelector((state) => state.orderManagement.orders);
+  const sortedOrders = [...orders].reverse().slice(0, 10);
   const loading = useSelector((state) => state.orderManagement.loading);
   const error = useSelector((state) => state.orderManagement.error);
   const success = useSelector((state) => state.orderManagement.success);
-  const sortedOrders = [...orders].reverse().slice(0, 10);
+  const { user, servicePartners, agents } = useSelector((state) => state.user);
+  const adminDetails = useSelector((state) => state.admin.adminDetails);
 
   useEffect(() => {
     if (success) {
@@ -28,10 +31,26 @@ export default function Home() {
   }, []);
 
   const statsData = [
-    { title: "Total No. of Users", value: "2,105" },
-    { title: "Total No. of Orders", value: orders.length },
-    { title: "Total No. of Service Partners", value: "238" },
-    { title: "Total No. of Delivery Agents", value: "1,032" },
+    {
+      title: "Total No. of Users",
+      value: user.length,
+      link: "/dashboard/users",
+    },
+    {
+      title: "Total No. of Orders",
+      value: orders.length,
+      link: "/dashboard/orderManagement",
+    },
+    {
+      title: "Total No. of Service Partners",
+      value: servicePartners.length,
+      link: "/dashboard/users",
+    },
+    {
+      title: "Total No. of Delivery Agents",
+      value: agents.length,
+      link: "/dashboard/users",
+    },
   ];
 
   const orderColumns = [
@@ -116,9 +135,9 @@ export default function Home() {
     <div className="container mx-auto py-2 px-4">
       <Header
         title="My Account"
-        userName="{user.name}"
-        userEmail="{user.email}"
-        userImage="{user.profileImage}"
+        userName={adminDetails?.firstName}
+        userEmail={adminDetails?.email}
+        userImage={adminDetails?.profileImage || avatar}
       />
 
       {/* Recent Orders */}
@@ -133,7 +152,12 @@ export default function Home() {
           {/* StatISTICs Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 mt-4">
             {statsData.map((stat, index) => (
-              <StatCard key={index} title={stat.title} value={stat.value} />
+              <StatCard
+                key={index}
+                title={stat.title}
+                value={stat.value}
+                linkHref={stat.link}
+              />
             ))}
           </div>
           <div className="mb-8">

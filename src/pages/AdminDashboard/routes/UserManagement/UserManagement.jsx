@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaSearch, FaPlus } from "react-icons/fa";
 import { DataTable } from "../../../../shared/Table/data-table";
 import AddServicePartner from "./AddServicePartner";
@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router";
 import avatar from "../../../../assets/avatar.png";
 import SearchFilter from "../../../../shared/Searchbar/SearchFilter";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedUser } from "../../../../redux/UserSlice";
+import Header from "../../../../shared/Section-Header/header";
 
 const UserManagement = () => {
   const [activeSection, setActiveSection] = useState("customers");
@@ -14,9 +17,13 @@ const UserManagement = () => {
   const [isAddAgentModalOpen, setIsAddAgentModalOpen] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const dispatch = useDispatch();
+  const walletBalances = useSelector((state) => state.wallet.walletBalances);
+  const { user, servicePartners, agents } = useSelector((state) => state.user);
+  const adminDetails = useSelector((state) => state.admin.adminDetails);
+
   const navigate = useNavigate();
 
-  // List of filters
   const filters = [
     { label: "Select", value: "" },
     { label: "Customer", value: "customer" },
@@ -45,368 +52,139 @@ const UserManagement = () => {
     setIsAddAgentModalOpen(true);
   };
 
-  const userData = [
-    {
-      profilePic: "https://randomuser.me/api/portraits/men/1.jpg", // Sample image
+  useEffect(() => {
+    user?.forEach((user) => {
+      if (user.walletId && !walletBalances[user.walletId]) {
+        // dispatch(fetchWalletDetails(user.walletId));
+      }
+    });
+  }, [user, dispatch, walletBalances]);
+  const selectedData = Array.isArray(
+    activeSection === "customers"
+      ? user
+      : activeSection === "servicePartners"
+      ? servicePartners
+      : activeSection === "deliveryAgents"
+      ? agents
+      : []
+  )
+    ? activeSection === "customers"
+      ? user
+      : activeSection === "servicePartners"
+      ? servicePartners
+      : activeSection === "deliveryAgents"
+      ? agents
+      : []
+    : [];
 
-      customer: "Chinedu Okafor",
-
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "09162577076",
-      balance: "$18,000",
-    },
-    {
-      customer: "Chinedu Okafor",
-
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "09162577076",
-      balance: "$18,000",
-    },
-    {
-      profilePic: "https://randomuser.me/api/portraits/men/8.jpg", // Sample image
-
-      customer: "Chinedu Okafor",
-
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "09162577076",
-      balance: "$18,000",
-    },
-    {
-      profilePic: "https://randomuser.me/api/portraits/men/1.jpg", // Sample image
-
-      customer: "Chinedu Okafor",
-
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "09162577076",
-      balance: "$18,000",
-    },
-    {
-      customer: "Chinedu Okafor",
-
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "09162577076",
-      balance: "$18,000",
-    },
-    {
-      customer: "Chinedu Okafor",
-
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "09162577076",
-      balance: "$18,000",
-    },
-    {
-      customer: "Chinedu jack",
-
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "09162577076",
-      balance: "$18,000",
-    },
-    {
-      customer: "Chinedu Okafor",
-
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "09162577076",
-      balance: "$18,000",
-    },
-    {
-      customer: "Chinedu Okafor",
-
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "09162577076",
-      balance: "$18,000",
-    },
-    {
-      customer: "Chinedu Okafor",
-
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "09162577076",
-      balance: "$18,000",
-    },
-    {
-      customer: "Chinedu Okafor",
-
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "09162577076",
-      balance: "$18,000",
-    },
-    {
-      customer: "Omobolanle Dende",
-
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "09162577076",
-      balance: "$18,000",
-    },
-  ];
   const usersColumns = [
     {
-      key: "customer",
+      key: "firstName",
       title: "Customer Name",
-      render: (customer, row) => (
-        <div className="flex items-center gap-3">
-          <img
-            src={row.profilePic || avatar} // Get the profile picture from row data
-            className="w-10 h-10 rounded-full object-cover"
-          />
-          <span>{customer}</span> {/* Customer name next to image */}
-        </div>
-      ),
+      render: (user, row) => {
+        return (
+          <div className="flex items-center gap-3">
+            <img
+              src={row.profilePic || avatar}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            <span>
+              {row?.firstName} {row?.lastName}
+            </span>
+          </div>
+        );
+      },
     },
-    { key: "id", title: "Customer ID No" },
+    {
+      key: "id",
+      title: " ID No.",
+      render: (text) => (text.length > 10 ? text.slice(0, 8) + "..." : text),
+    },
     { key: "email", title: "Email address" },
-    { key: "contact", title: "Contact Number" },
-    { key: "balance", title: "Wallet Balance" },
-  ];
-  const servicePartnersData = [
+    { key: "phoneNumber", title: "Contact Number" },
     {
-      profilePic: "https://randomuser.me/api/portraits/men/1.jpg", // Sample image
-
-      company: "Kaothar Wash",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contactPerson: "Buba Kaothar",
-      contact: "08173957359",
-    },
-    {
-      profilePic: "", // Sample image
-
-      company: "Kao Wash",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contactPerson: "Buba jack",
-      contact: "08173957359",
-    },
-    {
-      profilePic: "https://randomuser.me/api/portraits/men/5.jpg", // Sample image
-
-      company: "Kaothar Wash",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contactPerson: "Buba Kaothar",
-      contact: "08173957359",
-    },
-    {
-      profilePic: "https://randomuser.me/api/portraits/women/30.jpg", // Sample image
-
-      company: "Kaothar Wash",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contactPerson: "Buba Kaothar",
-      contact: "08173957359",
-    },
-    {
-      company: "Kaothar Wash",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contactPerson: "Buba Kaothar",
-      contact: "08173957359",
-    },
-    {
-      profilePic: "https://randomuser.me/api/portraits/women/19.jpg", // Sample image
-
-      company: "Kaothar Wash",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contactPerson: "Buba Kaothar",
-      contact: "08173957359",
-    },
-    {
-      company: "Kaothar Wash",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contactPerson: "Buba Kaothar",
-      contact: "08173957359",
-    },
-    {
-      company: "Kaothar Wash",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contactPerson: "Buba Kaothar",
-      contact: "08173957359",
-    },
-    {
-      company: "Kaothar Wash",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contactPerson: "Buba Kaothar",
-      contact: "08173957359",
-    },
-    {
-      company: "Kaothar jack",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contactPerson: "Buba jack",
-      contact: "08173957359",
-    },
-    {
-      company: "Kaothar Wash",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contactPerson: "Buba Kaothar",
-      contact: "08173957359",
+      key: "balance",
+      title: "Wallet Balance",
+      render: (user, row) => (
+        <span>
+          {walletBalances[row.walletId] !== undefined
+            ? `₦${walletBalances[row.walletId]}`
+            : "NIL"}
+        </span>
+      ),
     },
   ];
 
   const SPColumns = [
     {
-      key: "company",
+      key: "companyName",
       title: "Company Name",
-      render: (customer, row) => (
-        <div className="flex items-center gap-3">
-          <img
-            src={row.profilePic || avatar} // Get the profile picture from row data
-            alt={customer}
-            className="w-10 h-10 rounded-full object-cover"
-          />
-          <span>{customer}</span> {/* Customer name next to image */}
-        </div>
-      ),
+      render: (servicePartners, row) => {
+        console.log("Service Partners:", row, servicePartners);
+        return (
+          <div className="flex items-center gap-3">
+            <img
+              src={row.profilePic || avatar}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            <span>{row?.companyName}</span>
+          </div>
+        );
+      },
     },
-    { key: "id", title: " ID No." },
+    {
+      key: "id",
+      title: " ID No.",
+      render: (text) => (text.length > 10 ? text.slice(0, 8) + "..." : text),
+    },
     { key: "email", title: "Email address" },
-    { key: "contactPerson", title: "Contact Person's Name" },
-    { key: "contact", title: "Contact Number" },
+    { key: "contactPersonName", title: "Contact Person's Name" },
+    { key: "phoneNumber", title: "Contact Number" },
   ];
 
-  const DeliveryAgentsData = [
-    {
-      profilePic: "https://randomuser.me/api/portraits/men/50.jpg", // Sample image
-
-      name: "Omobolanle Dende",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-    {
-      profilePic: "https://randomuser.me/api/portraits/men/9.jpg", // Sample image
-
-      name: "Omobolanle Dende",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-    {
-      name: "Omobolanle Dende",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-    {
-      name: "Omobolanle jack",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-    {
-      name: "Omobolanle Dende",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-    {
-      name: "Omobolanle Dende",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-    {
-      name: "Omobolanle Dende",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-    {
-      profilePic: "https://randomuser.me/api/portraits/women/60.jpg", // Sample image
-
-      name: "Omobolanle Dende",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-    {
-      name: "Omobolanle Dende",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-    {
-      name: "Omobolanle Dende",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-    {
-      profilePic: "https://randomuser.me/api/portraits/women/82.jpg", // Sample image
-
-      name: "Omobolanle Dende",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-    {
-      name: "Omobolanle Dende",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-    {
-      name: "Cosmos Dende",
-      id: "0081727",
-      email: "olivia@untitledui.com",
-      contact: "08173957359",
-    },
-  ];
   const DAColumns = [
     {
-      key: "name",
+      key: "fullName",
       title: "Agent's name",
-      render: (customer, row) => (
-        <div className="flex items-center gap-3">
-          <img
-            src={row.profilePic || avatar} // Get the profile picture from row data
-            alt={customer}
-            className="w-10 h-10 rounded-full object-cover"
-          />
-          <span>{customer}</span> {/* Customer name next to image */}
-        </div>
-      ),
+      render: (agents, row) => {
+        console.log("Agents:", row, agents);
+
+        return (
+          <div className="flex items-center gap-3">
+            <img
+              src={row.profilePic || avatar}
+              className="w-8 h-8 rounded-full object-cover"
+            />
+            <span>{row?.fullName}</span>
+          </div>
+        );
+      },
     },
-    { key: "id", title: "Agent's ID No." },
+    {
+      key: "id",
+      title: "ID No.",
+      render: (text) => (text.length > 10 ? text.slice(0, 8) + "..." : text),
+    },
     { key: "email", title: "Email address" },
-    { key: "contact", title: "Contact Number" },
+    { key: "phoneNumber", title: "Contact Number" },
   ];
-
-  // Define column and data mappings
-
-  console.log("Active Section:", activeSection);
 
   return (
     <div className="container mx-auto py-6 px-4">
-      <div className="font-bold text-3xl">User Management</div>
+      <Header
+        title="User Management"
+        userName={adminDetails?.firstName}
+        userEmail={adminDetails?.email}
+        userImage={adminDetails?.profileImage || avatar}
+      />
 
       {/* Search & Filter Component */}
-      {
-        <div className="mt-5">
-          <SearchFilter onSearch={handleSearch} filters={filters} />
-        </div>
-      }
 
-      {/* Search Input */}
+      <SearchFilter onSearch={handleSearch} filter={filters} />
       <div className=" flex justify-end">
         {activeSection !== "customers" && (
           <button
-            className="bg-[#E85C19] text-white font-bold right-10 px-3 py-2 rounded-lg 
+            className="bg-[#E85C19]  text-white font-bold px-3 py-2 rounded-lg 
         hover:bg-[#c74e10] transition 
         w-[120px] sm:w-[120px] md:w-[150px] lg:w-[200px] h-[80px] sm:h-[80px] md:h-[80px] lg:h-[60px]"
             onClick={
@@ -423,7 +201,7 @@ const UserManagement = () => {
       </div>
 
       {/* Section Tabs */}
-      <div className="container mx-auto  ml-3 flex mt-11 mb-5 gap-10 text-gray-600">
+      <div className="container mx-auto  flex  mb-5 gap-10 text-gray-600">
         {["customers", "servicePartners", "deliveryAgents"].map((section) => (
           <div
             key={section}
@@ -473,27 +251,29 @@ const UserManagement = () => {
             ? DAColumns
             : [] // Default to an empty array or your fallback case
         }
-        data={
-          activeSection === "customers"
-            ? userData
-            : activeSection === "servicePartners"
-            ? servicePartnersData
-            : activeSection === "deliveryAgents"
-            ? DeliveryAgentsData
-            : [] // Default to an empty array or your fallback case
-        }
+        data={selectedData}
+        searchTerm={searchTerm}
         showFooter={true}
         currentPage={currentPage}
-        searchTerm={searchTerm}
         onPageChange={onPageChange}
         actionColumn={{
           title: "",
           render: (row) => (
-            <Link
-              to="/dashboard/users/viewdetails"
-              className="text-[#e86317] text-sm hover:underline">
+            <a
+              href="#"
+              className="text-[#e86317] text-sm hover:underline"
+              onClick={(e) => {
+                e.preventDefault(); // Prevent default navigation
+                dispatch(
+                  setSelectedUser({
+                    userId: row.id,
+                    data: row, // Store full user details
+                  })
+                );
+                navigate("/dashboard/users/viewdetails");
+              }}>
               View Details
-            </Link>
+            </a>
           ),
         }}
         onRowClick={(row) => console.log("Row clicked:", row)}

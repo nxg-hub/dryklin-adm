@@ -39,7 +39,9 @@ const OrderDetails = () => {
             />
           </div>
           <span className="flex flex-col gap-3">
-            <h2 className="font-semibold capitalize">name</h2>
+            <h2 className="font-semibold capitalize">
+              {selectedOrder.customerName || "name"}
+            </h2>
             <p>User Id: {selectedOrder.customerId}</p>
           </span>
         </div>
