@@ -1,13 +1,35 @@
 import React from "react";
 import { AnalyticsChart } from "../../../../shared/Chart/analytics-chart";
 import { StatCard } from "../../../../shared/Stat-Card/stat-card";
+import Header from "../../../../shared/Section-Header/header.jsx";
+import { useSelector } from "react-redux";
+import avatar from "../../../../assets/avatar.png";
 
 const AnalyticsAndReports = () => {
+  const orders = useSelector((state) => state.orderManagement.orders);
+  const { user, servicePartners, agents } = useSelector((state) => state.user);
+  const adminDetails = useSelector((state) => state.admin.adminDetails);
   const statsData = [
-    { title: "Total No. of Users", value: "2,105" },
-    { title: "Total No. of Orders", value: "7,302" },
-    { title: "Total No. of Service Partners", value: "238" },
-    { title: "Total No. of Delivery Agents", value: "1,032" },
+    {
+      title: "Total No. of Users",
+      value: user.length,
+      link: "/dashboard/users",
+    },
+    {
+      title: "Total No. of Orders",
+      value: orders.length,
+      link: "/dashboard/orderManagement",
+    },
+    {
+      title: "Total No. of Service Partners",
+      value: servicePartners.length,
+      link: "/dashboard/users",
+    },
+    {
+      title: "Total No. of Delivery Agents",
+      value: agents.length,
+      link: "/dashboard/users",
+    },
   ];
   const analyticsData = {
     login: {
@@ -165,11 +187,21 @@ const AnalyticsAndReports = () => {
   const reportYaxis = ["150", "125", "100", "75", "50", "25"];
   return (
     <div>
-      AnalyticsAndReports
+      <Header
+        title=" Analytics And Reports"
+        userName={adminDetails?.firstName}
+        userEmail={adminDetails?.email}
+        userImage={adminDetails?.profileImage || avatar}
+      />
       {/* StatISTICs Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 mt-4">
         {statsData.map((stat, index) => (
-          <StatCard key={index} title={stat.title} value={stat.value} />
+          <StatCard
+            key={index}
+            title={stat.title}
+            value={stat.value}
+            linkHref={stat.link}
+          />
         ))}
       </div>
       {/* analytics */}

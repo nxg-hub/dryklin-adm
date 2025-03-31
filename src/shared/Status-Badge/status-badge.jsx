@@ -3,16 +3,16 @@ export function StatusBadge({ status, variant, className = "" }) {
     switch (variant) {
       case "new":
         return "bg-[#3daffc]";
-      case "success":
-      case "completed":
-      case "paid":
+      case "SUCCESS":
+      case "CONFIRMED":
+      case "PAID":
         return "bg-[#22c55e]";
-      case "progress":
+      case "PROGRESS":
         return "bg-[#fca63d]";
-      case "cancelled":
+      case "CANCELLED":
         return "bg-[#ec3705]";
-      case "pending":
-      case "processing":
+      case "PENDING":
+      case "PROCESSING":
         return "bg-[#fdc842]";
       default:
         return "bg-gray-500";

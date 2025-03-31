@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { StatusBadge } from "../../../../shared/Status-Badge/status-badge";
 import { DataTable } from "../../../../shared/Table/data-table";
-import { MdOutlineMenuBook } from "react-icons/md";
+// import { MdOutlineMenuBook } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import SearchFilter from "../../../../shared/Searchbar/SearchFilter";
 import { fetchOrders } from "../../../../redux/OrderMangementSlice";
+import Header from "../../../../shared/Section-Header/header.jsx";
+import { setSelectedOrder } from "../../../../redux/OrderSlice.jsx";
+import { useNavigate } from "react-router-dom";
+import avatar from "../../../../assets/avatar.png";
 
 const OrderManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterBy, setFilterBy] = useState("customerName"); // Default filter
+  const [filterBy, setFilterBy] = useState("id"); // Default filter
   const [searchTerm, setSearchTerm] = useState("");
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const orders = useSelector((state) => state.orderManagement.orders);
   const loading = useSelector((state) => state.orderManagement.loading);
   const error = useSelector((state) => state.orderManagement.error);
   const success = useSelector((state) => state.orderManagement.success);
+  const adminDetails = useSelector((state) => state.admin.adminDetails);
 
   const sortedOrders = orders.slice().reverse();
 
@@ -54,14 +59,14 @@ const OrderManagement = () => {
       key: "orderStatus",
       title: "Order Status",
       render: (value, row) => (
-        <StatusBadge status={value} variant={row.orderStatusVariant} />
+        <StatusBadge status={value} variant={row.orderStatus} />
       ),
     },
     {
       key: "paymentStatus",
       title: "Payment Status",
       render: (value, row) => (
-        <StatusBadge status={value} variant={row.paymentStatusVariant} />
+        <StatusBadge status={value} variant={row.paymentStatus} />
       ),
     },
   ];
@@ -69,7 +74,12 @@ const OrderManagement = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-11 flex items-center ">
-        OrderManagement
+        <Header
+          title=" Order Management"
+          userName={adminDetails?.firstName}
+          userEmail={adminDetails?.email}
+          userImage={adminDetails?.profileImage || avatar}
+        />
         {/* <span className="flex items-center ml-2.5 gap-2 font-light text-white text-[16px] px-3 py-2 rounded-full bg-[#F32749]  ">
           <MdOutlineMenuBook size={16} />
           {ordersData.length}
@@ -98,8 +108,12 @@ const OrderManagement = () => {
                 render: (row) => (
                   <a
                     href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      dispatch(setSelectedOrder(row)); // Store in Redux
+                      navigate("/dashboard/orderManagement/orderDetails"); // Navigate to details page
+                    }}
                     className="text-[#e86317] text-sm hover:underline">
-                    {console.log(row)}
                     View Details
                   </a>
                 ),

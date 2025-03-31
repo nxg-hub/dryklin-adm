@@ -1,5 +1,10 @@
 import "./App.css";
-import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import LoginPage from "./pages/Login/Login.jsx";
 import ResetPassword from "./pages/Reset-Password/ResetPassword.jsx";
 import AdminDashboard from "./pages/AdminDashboard/Index.jsx";
@@ -11,6 +16,7 @@ import SubAdmin from "./pages/AdminDashboard/routes/SubAdmin/SubAdmin.jsx";
 import OTPValidationPage from "./pages/Reset-Password/OTP-Validation.jsx";
 import NewPasswordPage from "./pages/Reset-Password/NewPassword.jsx";
 import ViewDetails from "./pages/AdminDashboard/routes/UserManagement/viewDetails.jsx";
+import OrderDetails from "./pages/AdminDashboard/routes/OrderManagement/OrderDetails.jsx";
 
 function App() {
   return (
@@ -27,8 +33,15 @@ function App() {
               path="/dashboard/orderManagement"
               element={<OrderManagement />}
             />
+            <Route
+              path="/dashboard/orderManagement/orderDetails"
+              element={<OrderDetails />}
+            />
             <Route path="/dashboard/users" element={<UserManagement />} />
-            <Route path="/dashboard/users/viewdetails" element={<ViewDetails/>} />
+            <Route
+              path="/dashboard/users/viewdetails"
+              element={<ViewDetails />}
+            />
 
             <Route
               path="/dashboard/analytics"
