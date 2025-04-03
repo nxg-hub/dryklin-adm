@@ -17,6 +17,7 @@ import OTPValidationPage from "./pages/Reset-Password/OTP-Validation.jsx";
 import NewPasswordPage from "./pages/Reset-Password/NewPassword.jsx";
 import ViewDetails from "./pages/AdminDashboard/routes/UserManagement/viewDetails.jsx";
 import OrderDetails from "./pages/AdminDashboard/routes/OrderManagement/OrderDetails.jsx";
+import SubAdminDetails from "./pages/AdminDashboard/routes/SubAdmin/SubAdminDetails.jsx";
 
 function App() {
   return (
@@ -48,6 +49,11 @@ function App() {
               element={<AnalyticsAndReports />}
             />
             <Route path="/dashboard/subAdmins" element={<SubAdmin />} />
+            <Route
+              path="/dashboard/subAdmins/sub-admin-details"
+              element={<SubAdminDetails />}
+            />
+
           </Route>
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

@@ -5,7 +5,7 @@ import{ useSelector } from "react-redux"
 import { useNavigate } from 'react-router-dom';
 
 
-const ConfirmDeleteModal = ({onClose, back}) => {
+const ConfirmSuspendModal = ({onClose, back}) => {
       const [isLoading, setIsLoading] = useState (false)
   
       const navigate = useNavigate();
@@ -46,8 +46,8 @@ const ConfirmDeleteModal = ({onClose, back}) => {
 
   });
   setTimeout(() => {
-    onClose();  // ✅ Properly closing the modal
-  }, 2000);  // Wait for 2 seconds before closing (optional)
+    onClose();  
+  }, 2000); 
 
   navigate ('/dashboard/users')
 
@@ -125,4 +125,4 @@ Suspend User
 }
 
 
-export default ConfirmDeleteModal;
+export default ConfirmSuspendModal;

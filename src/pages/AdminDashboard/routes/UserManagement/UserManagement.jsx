@@ -4,7 +4,6 @@ import { DataTable } from "../../../../shared/Table/data-table";
 import AddServicePartner from "./AddServicePartner";
 import AddAgent from "./AddAgent";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router";
 import avatar from "../../../../assets/avatar.png";
 import SearchFilter from "../../../../shared/Searchbar/SearchFilter";
 import { useDispatch, useSelector } from "react-redux";
@@ -180,8 +179,12 @@ const UserManagement = () => {
 
       {/* Search & Filter Component */}
 
+      <div className="mt-8 flex items-center justify-between">
+<div className="flex">
       <SearchFilter onSearch={handleSearch} filter={filters} />
-      <div className=" flex justify-end">
+      </div>
+<div className="flex justify-end">
+      
         {activeSection !== "customers" && (
           <button
             className="bg-[#E85C19]  text-white font-bold px-3 py-2 rounded-lg 
@@ -198,8 +201,9 @@ const UserManagement = () => {
               : "Add Delivery Agent"}
           </button>
         )}
-      </div>
-
+        
+</div>
+</div>
       {/* Section Tabs */}
       <div className="container mx-auto  flex  mb-5 gap-10 text-gray-600">
         {["customers", "servicePartners", "deliveryAgents"].map((section) => (
