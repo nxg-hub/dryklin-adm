@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X } from "lucide-react"; // Close button icon
 import { FaCheck } from "react-icons/fa";
 
-const DeleteModal = ({back}) => {
+const SuspendModal = ({back}) => {
     return (
         <div className="fixed inset-0 flex items-center justify-center border-2 border-[#a0a0a0] bg-black/40 overflow-y-auto p-4 z-[1000]">
                     
@@ -31,4 +31,4 @@ const DeleteModal = ({back}) => {
 
 }
    
-export default DeleteModal;
+export default SuspendModal;

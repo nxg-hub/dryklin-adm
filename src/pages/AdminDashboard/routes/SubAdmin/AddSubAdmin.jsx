@@ -2,16 +2,13 @@ import React, { useState } from "react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import { X } from "lucide-react"; // Close button icon
 import FeedbackModal from "../../../../components/modal";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchAgents } from "../../../../redux/UserSlice";
 
 const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
 const ADD_AGENT_URL = import.meta.env.VITE_ADD_AGENT;
 
-const AddAgent = ({ isOpen, onClose }) => {
+const AddSubAdmin = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const dispatch = useDispatch();
 
   const [modalConfig, setModalConfig] = useState({
     show: false,
@@ -62,7 +59,6 @@ const AddAgent = ({ isOpen, onClose }) => {
           onClose();
         }, 2000);
 
-        dispatch(fetchAgents());
       } else {
         setModalConfig({
           show: true,
@@ -96,13 +92,13 @@ const AddAgent = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center border-2 border-[#a0a0a0] rounded-md overflow-y-auto p-4 z-50">
       <div className="relative bg-white p-11 rounded-[3%] shadow-lg w-[1100px] max-h-[120%] overflow-y-auto">
-      <button
+        <button
           className="absolute top-3 border border-gray-700  rounded-full p-2 right-2 text-gray-700 hover:text-red-500"
           onClick={onClose}>
           <X size={25} />
         </button>
         <h2 className="text-xl text-[#E85C19] font-semibold mb-4">
-          Add New Delivery Agent
+          Add New Sub-Admin
         </h2>
 
         <Formik
@@ -237,4 +233,4 @@ const AddAgent = ({ isOpen, onClose }) => {
   );
 };
 
-export default AddAgent;
+export default AddSubAdmin;
