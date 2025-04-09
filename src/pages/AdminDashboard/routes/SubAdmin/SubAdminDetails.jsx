@@ -3,21 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { FaRegCopy } from "react-icons/fa"; // Import from React Icons
 import { FaMapMarkerAlt, FaTrash } from "react-icons/fa"; // Import icons
-import ConfirmSuspendModal from "../UserManagement/confirmSuspendModal";
 import avatar from "../../../../assets/avatar.png";
 import FeedbackModal from "../../../../components/modal";
-
-import { useSelector } from "react-redux";
+import { fetchSubAdmins } from "../../../../redux/Sub-adminSlice";
+import { useDispatch, useSelector } from "react-redux";
+import ConfirmSuspendModal from "./confirmSuspendModal";
 
 const SubAdminDetails = () => {
   const navigate = useNavigate();
   const [copied, setCopied] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const [deleted, setDeleted] = useState(false);
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState("");
   const [isConfirmSuspendModalOpen, setConfirmSuspendModalOpen] = useState("");
-  const selectedUser = useSelector((state) => state.user.selectedUser);
+  const selectedSubadmin = useSelector((state) => state.subadmin.selectedSubadmin);
   const [modalConfig, setModalConfig] = useState({
     show: false,
     type: "success",
@@ -39,10 +40,15 @@ const SubAdminDetails = () => {
     setTimeout(() => setCopied(""), 2000); // Reset after 2 seconds
   };
 
-  const handleDelete = () => {
-    setDeleted(true);
-    setTimeout(() => setDeleted(false), 2000);
-  };
+  
+  const dateCreated = selectedSubadmin?.dateCreated;
+
+  let formattedDate = "";
+  
+  if (Array.isArray(dateCreated) && dateCreated.length >= 3) {
+    const [year, month, day] = dateCreated;
+    formattedDate = `${month}/${day}/${year}`;
+  }
 
   const handleConfirmSuspendClick = () => {
     setConfirmSuspendModalOpen(true);
@@ -51,20 +57,24 @@ const SubAdminDetails = () => {
   const handleDeactivateClick = async () => {
     setIsLoading(true);
 
-    if (!selectedUser?.id) {
+    if (!selectedSubadmin?.id) {
       console.error("No user selected");
       return;
     }
+    const token = sessionStorage.getItem("token");
+
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/v1/auth/${selectedUser.id}/deactivate`,
+        `${API_BASE_URL}/api/v1/auth/subadmins/deactivate?email=${selectedSubadmin?.email}`,
         {
-          method: "PUT",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+
           },
-          body: JSON.stringify({ userId: selectedUser.id }),
+          body: JSON.stringify({ email: selectedSubadmin.email }),
         }
       );
 
@@ -82,15 +92,13 @@ const SubAdminDetails = () => {
         setModalConfig({
           show: true,
           type: "success",
-          title: "User Deactivated",
-          description: "You have successfully deactivated this user.",
-          redirectPath: "/dashboard/users",
+          title: "Subadmin Deactivated",
+          description: "You have successfully deactivated Subadmin.",
+          redirectPath: "/dashboard/subAdmins",
         });
+       dispatch(fetchSubAdmins());
 
-        setTimeout(() => {
-          onClose(); // ✅ Close modal
-          navigate("/dashboard/users"); // ✅ Redirect
-        }, 2000);
+        
       } else {
         setModalConfig({
           show: true,
@@ -99,12 +107,12 @@ const SubAdminDetails = () => {
           description:
             typeof result === "string"
               ? result
-              : result.message || "Failed to deactivate user.",
+              : result.message || "Failed to deactivate sub-admin.",
           redirectPath: null,
         });
       }
     } catch (err) {
-      console.error("Error deactivating user:", err);
+      console.error("Error deactivating sub-admin:", err);
 
       setModalConfig({
         show: true,
@@ -122,12 +130,9 @@ const SubAdminDetails = () => {
     setModalConfig({ ...modalConfig, show: false });
   };
 
-  if (!selectedUser) return <p>No user details found.</p>;
+  if (!selectedSubadmin) return <p>No details found.</p>;
 
-  const fullName = selectedUser?.fullName || "";
-  const nameParts = fullName.split(" ");
-  const firstname = nameParts[0] || "";
-  const lastname = nameParts.slice(1).join(" ") || "";
+  
 
   return (
     <div className="container mx-auto py-6 px-4">
@@ -141,7 +146,7 @@ const SubAdminDetails = () => {
       <div className="mt-5 text-black text-xl font-medium flex items-center gap-5 ">
         <img
           className="mt-8 h-25 w-25 rounded-full"
-          src={selectedUser?.ProfilePic || avatar}
+          src={selectedSubadmin?.ProfilePic || avatar}
           alt="User Image"
         />
         </div>
@@ -150,15 +155,20 @@ const SubAdminDetails = () => {
           {
             label: "First Name",
             value:
-              selectedUser?.firstName || selectedUser?.companyName || firstname,
+              selectedSubadmin?.firstName || selectedUser?.companyName || firstname,
           },
-          { label: "Last Name", value: selectedUser?.lastName || lastname },
-          { label: "Email Address", value: selectedUser?.email },
-          { label: "Phone Number", value: selectedUser?.phoneNumber },
-          { label: "Password", value: selectedUser?.phoneNumber },
-          { label: "Date Created", value: selectedUser?.phoneNumber },
+          { label: "Last Name", value: selectedSubadmin?.lastName || lastname },
+          { label: "Email Address", value: selectedSubadmin?.email },
+          { label: "Phone Number", value: selectedSubadmin?.phoneNumber },
+          {
+            label: "Password",
+            value: selectedSubadmin?.password?.length > 10
+              ? `${selectedSubadmin.password.slice(0, 10)}...`
+              : selectedSubadmin?.password
+          },
+          { label: "Date Created", value: formattedDate },
 
-         
+          
         ].map(({ label, value }) => (
           <div key={label} className="group w-full">
             <h1 className="text-[#E85C13] text-2xl font-bold relative">
@@ -182,24 +192,24 @@ const SubAdminDetails = () => {
   <div className="flex items-center gap-5"> 
     
 <button 
-  className={`text-xl ${selectedUser?.suspended === true ? 'text-gray-400 cursor-not-allowed' : 'text-[#E85C13]'}`}
+  className={`text-xl ${selectedSubadmin?.suspended === true ? 'text-gray-400 cursor-not-allowed' : 'text-[#E85C13]'}`}
   onClick={handleConfirmSuspendClick}
-  disabled={selectedUser?.suspended === true}
+  disabled={selectedSubadmin?.suspended === true}
 >
-  {selectedUser?.suspended === true ? 'User Suspended' : 'Suspend User'}
+  {selectedSubadmin?.suspended === true ? 'User Suspended' : 'Suspend User'}
 </button>
 
 
 {/* Deactivate Button */}
 <button 
   className={`bg-[#E85C19] text-white px-8 py-4 rounded-lg flex items-center gap-2 transition 
-             ${selectedUser?.enabled === false ? 'bg-gray-400 cursor-not-allowed' : 'hover:bg-[#c74e10]'}`}
+             ${selectedSubadmin?.enabled === false ? 'bg-gray-400 cursor-not-allowed' : 'hover:bg-[#c74e10]'}`}
   onClick={handleDeactivateClick}
-  disabled={selectedUser?.enabled === false || isLoading}
+  disabled={selectedSubadmin?.enabled === false || isLoading}
 >
   {isLoading 
     ? 'Please Wait...' 
-    : selectedUser?.enabled === false 
+    : selectedSubadmin?.enabled === false 
       ? 'User Deactivated' 
       : 'Deactivate User'}
 </button>

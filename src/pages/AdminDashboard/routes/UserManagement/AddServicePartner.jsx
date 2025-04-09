@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Field, Formik, Form, ErrorMessage } from 'formik';
-import { X } from "lucide-react"; // Close button icon
+import { X } from "lucide-react"; 
+import { AddSPSchema } from "./schema/AddSPschema";
 import FeedbackModal from "../../../../components/modal";
 import { fetchServicePartners } from "../../../../redux/UserSlice";
 import { useDispatch } from "react-redux"
@@ -104,6 +105,7 @@ setModalConfig({ ...modalConfig, show: false });
        
         <Formik
           initialValues={{ email: "", companyName: "", phoneNumber: "", address: "", contactPersonName: "" }}
+          validationSchema={AddSPSchema}
           onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (

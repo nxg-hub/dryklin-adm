@@ -4,19 +4,25 @@ import { useNavigate } from "react-router-dom";
 import avatar from "../../../../assets/avatar.png"
 import Header from "../../../../shared/Section-Header/header"
 import SearchFilter from "../../../../shared/Searchbar/SearchFilter";
-import { useDispatch, useSelector } from "react-redux";
 import AddSubAdmin from "./AddSubAdmin";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedSubadmin } from "../../../../redux/Sub-adminSlice";
+
 
 const SubAdmin = () => {
+  const dispatch = useDispatch();
+
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
     const [isAddSAModalOpen, setIsAddSAModalOpen] = useState("");
-
     const adminDetails = useSelector((state) => state.admin.adminDetails);
 
+    const subadmins = useSelector((state) => state.subadmin.subadmins);
+    // const sortedSubadmins = subadmins?.data.slice().reverse(); 
 
 
+console.log (subadmins)
     const filters = [
       { label: "Select", value: "" },
       { label: "Customer", value: "customer" },
@@ -36,11 +42,22 @@ const SubAdmin = () => {
     const handleAddSAClick = () => {
       setIsAddSAModalOpen(true);
     };
+
+    const filteredSubadmins = Array.isArray(subadmins)
+    ? subadmins.filter((subadmin) =>
+        subadmin?.firstName?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
+
+
+    console.log ('data', filteredSubadmins)
+
     const SubAdminColumns = [
       {
         key: "firstName",
         title: "Name",
-         render: (Data, row) => {
+         render: (subadmins, row) => {
+          console.log('sb',subadmins)
                 return (
                   <div className="flex items-center gap-3">
                     <img
@@ -55,16 +72,16 @@ const SubAdmin = () => {
               },          
       },
      { key: "email", title: "Email Address" },
-     { key: "number", title: "Contact Number" },
+     { key: "phoneNumber", title: "Contact Number" },
      { key: "date", title: "Date Created" }
 ]
- const Data = [
-  { "firstName": "Olivia Pat",
-    "email": "OliviaPat@gmail.com",
-    "number": "09123458697",
-    "date" : "20/4/2025"
-  }
- ]
+//  const Data = [
+//   { "firstName": "Olivia Pat",
+//     "email": "OliviaPat@gmail.com",
+//     "number": "09123458697",
+//     "date" : "20/4/2025"
+//   }
+//  ]
 
 
 
@@ -102,7 +119,7 @@ const SubAdmin = () => {
    <DataTable
                 columns={SubAdminColumns}
                 showFooter={true}
-                data={Data}
+                data={subadmins}
                 searchTerm={searchTerm}
                 currentPage={currentPage}
                 onPageChange={onPageChange}
@@ -113,6 +130,12 @@ const SubAdmin = () => {
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
+                        dispatch(
+                                          setSelectedSubadmin({
+                                            userId: row.id,
+                                            data: row, // Store full user details
+                                          })
+                                        );
                         navigate("/dashboard/subAdmins/sub-admin-details"); // Navigate to details page
                       }}
                       className="text-[#e86317] text-sm hover:underline">

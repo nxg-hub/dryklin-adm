@@ -9,6 +9,9 @@ import SearchFilter from "../../../../shared/Searchbar/SearchFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedUser } from "../../../../redux/UserSlice";
 import Header from "../../../../shared/Section-Header/header";
+import { fetchWalletDetails } from "../../../../redux/WalletSlice";
+import { StatusBadge } from "../../../../shared/Status-Badge/status-badge";
+
 
 const UserManagement = () => {
   const [activeSection, setActiveSection] = useState("customers");
@@ -31,7 +34,6 @@ const UserManagement = () => {
     { label: "Order Status", value: "orderStatus" },
   ];
 
-  // Handle search and filter changes
   const handleSearch = (term, filter) => {
     setSearchTerm(term);
     setFilterBy(filter);
@@ -54,7 +56,7 @@ const UserManagement = () => {
   useEffect(() => {
     user?.forEach((user) => {
       if (user.walletId && !walletBalances[user.walletId]) {
-        // dispatch(fetchWalletDetails(user.walletId));
+        dispatch(fetchWalletDetails(user.walletId));
       }
     });
   }, [user, dispatch, walletBalances]);
@@ -170,8 +172,11 @@ const UserManagement = () => {
 
   return (
     <div className="container mx-auto py-6 px-4">
+              <StatusBadge status="20000" variant='PROGRESS'/>
+
       <Header
         title="User Management"
+        
         userName={adminDetails?.firstName}
         userEmail={adminDetails?.email}
         userImage={adminDetails?.profileImage || avatar}
@@ -253,7 +258,7 @@ const UserManagement = () => {
             ? SPColumns
             : activeSection === "deliveryAgents"
             ? DAColumns
-            : [] // Default to an empty array or your fallback case
+            : []
         }
         data={selectedData}
         searchTerm={searchTerm}

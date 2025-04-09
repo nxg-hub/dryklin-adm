@@ -41,8 +41,9 @@ const ViewDetails = () => {
   };
 
   const handleDelete = () => {
+    console.log("Delete clicked");
+
     setDeleted(true);
-    setTimeout(() => setDeleted(false), 2000);
   };
 
   const handleConfirmSuspendClick = () => {
@@ -194,50 +195,34 @@ const ViewDetails = () => {
           <div className="container p-6 flex flex-col md:flex-row md:justify-between gap-6 mt-5 text-black">
       
       {/* Section 1 */}
+      {!deleted && (
+
       
-      <div className="group w-full md:w-auto">
-        <h1 className="text-black text-lg font-bold relative flex items-center gap-2">
-          <FaMapMarkerAlt className="text-red-500 h-5 w-5" /> {/* Location Icon */}
-          {selectedUser?.state || selectedUser?.location || selectedUser?.address}
-        </h1>
-        <div className="flex items-center gap-2 mt-5">
-          <h2 className="text-xl">{selectedUser?.state || selectedUser?.location || selectedUser?.address}</h2>
-          <div className="flex items-center gap-1 ml-8 cursor-pointer" onClick={handleDelete}>
-            <FaTrash className="h-5 w-5 text-[#E85C13] hover:text-red-600" /> {/* Delete Icon */}
-            <span className="text-sm text-[#E85C13] hover:text-red-600">Delete</span>
-          </div>
-        </div>
-      </div>
       <div className="group w-full md:w-auto">
         <h1 className="text-black text-lg font-bold relative flex items-center gap-2">
           <FaMapMarkerAlt className="text-red-500 h-5 w-5" /> {/* Location Icon */}
          {selectedUser?.state || selectedUser?.location || selectedUser?.address}
         </h1>
-        <div className="flex items-center gap-2 mt-5">
-          <h2 className="text-xl">{selectedUser?.state || selectedUser?.location || selectedUser?.address}  </h2>
-          <div className="flex items-center gap-1 ml-8 cursor-pointer" onClick={handleDelete}>
-            <FaTrash className="h-5 w-5 text-[#E85C13] hover:text-red-600" /> {/* Delete Icon */}
-            <span className="text-sm text-[#E85C13] hover:text-red-600">Delete</span>
-          </div>
-        </div>
+  <div className="flex items-center gap-2 mt-5">
+    <h2 className="text-xl">
+      {selectedUser?.state || selectedUser?.location || selectedUser?.address}
+    </h2>
+    <div
+      className="flex items-center gap-1 ml-8 cursor-pointer"
+      onClick={handleDelete}
+    >
+      <FaTrash className="h-5 w-5 text-[#E85C13] hover:text-red-600" />
+      <span className="text-sm text-[#E85C13] hover:text-red-600">Delete</span>
+    </div>
+  </div>
+
       </div>
+        )}
       
   
       </div>
       <div className="container px-10 mt-20 flex justify-end text-black">
   <div className="flex items-center gap-5"> 
-    {/* Delete Text */}
-    
-    {/* <button className="text-xl text-[#E85C13]" */}
-    {/* onClick={handleConfirmDeleteClick}>Suspend User</button> */}
-
-    {/* Deactivate Button */}
-    {/* <button className="bg-[#E85C19] text-white px-8 py-4 rounded-lg hover:bg-[#c74e10] transition flex items-center gap-2" */}
-    {/* onClick={handleDeactivateClick}> */}
-                  {/* {isLoading ? 'Please Wait...' : 'Deactivate User'}               */}
-                  {/* </button> */}
-
-                  {/* Suspend Button */}
 <button 
   className={`text-xl ${selectedUser?.suspended === true ? 'text-gray-400 cursor-not-allowed' : 'text-[#E85C13]'}`}
   onClick={handleConfirmSuspendClick}
@@ -246,8 +231,6 @@ const ViewDetails = () => {
   {selectedUser?.suspended === true ? 'User Suspended' : 'Suspend User'}
 </button>
 
-
-{/* Deactivate Button */}
 <button 
   className={`bg-[#E85C19] text-white px-8 py-4 rounded-lg flex items-center gap-2 transition 
              ${selectedUser?.enabled === false ? 'bg-gray-400 cursor-not-allowed' : 'hover:bg-[#c74e10]'}`}
