@@ -13,6 +13,7 @@ import { fetchUser } from "../../redux/UserSlice.jsx";
 import { fetchAgents} from "../../redux/UserSlice.jsx";
 import { fetchServicePartners } from "../../redux/UserSlice.jsx";
 import { fetchAdminDetails } from "../../redux/LoggedInAdminSlice.jsx";
+import { fetchSubAdmins } from "../../redux/Sub-adminSlice.jsx";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -46,11 +47,14 @@ export default function LoginPage() {
                 } else {
                     sessionStorage.setItem("token", response.data.token);
                     sessionStorage.setItem("sessionId", response.data.sessionId);
+                    localStorage.setItem("token", response.data.token);
+
                 }
                   dispatch (fetchUser());
                   dispatch (fetchAgents());
-                  dispatch (fetchServicePartners())
+                  dispatch (fetchServicePartners());
                   dispatch(fetchAdminDetails(email));
+                  dispatch (fetchSubAdmins());
 
                   
                 setModalConfig({

@@ -7,11 +7,12 @@ import walletReducer from "./WalletSlice";
 import orderReducer from "./OrderMangementSlice";
 import selectedOrder from "./OrderSlice";
 import adminReducer from "./LoggedInAdminSlice";
+import subadminReducer from "./Sub-adminSlice";
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user", "selectedOrder", "wallet", "admin"],
+  whitelist: ["user", "selectedOrder", "wallet", "admin", "subadmin"],
 };
 
 const rootReducer = combineReducers({
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   admin: adminReducer,
   orderManagement: orderReducer,
   selectedOrder,
+  subadmin: subadminReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

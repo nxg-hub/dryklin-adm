@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import { X } from "lucide-react"; // Close button icon
+import { X } from "lucide-react"; 
 import FeedbackModal from "../../../../components/modal";
+import { AddAgentSchema } from "./schema/AddAgentSchema";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAgents } from "../../../../redux/UserSlice";
 
@@ -22,19 +23,16 @@ const AddAgent = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
-    console.log("Form values:", values); // Debugging
 
     const fullName = values.fullName || "";
     const [firstName = "", lastName = ""] = fullName.trim().split(" ");
 
-    // Reconstruct fullName before sending to the backend
     const requestBody = {
       fullName: `${values.firstName} ${values.lastName}`.trim(),
       email: values.email,
       phoneNumber: values.phoneNumber,
       location: values.location,
     };
-    console.log("Request Body:", requestBody);
 
     try {
       const response = await fetch(`${API_BASE_URL}${ADD_AGENT_URL}`, {
@@ -46,7 +44,6 @@ const AddAgent = ({ isOpen, onClose }) => {
       });
 
       const result = await response.json();
-      console.log(result);
 
       if (response.ok) {
         setModalConfig({
@@ -60,7 +57,7 @@ const AddAgent = ({ isOpen, onClose }) => {
         });
         setTimeout(() => {
           onClose();
-        }, 2000);
+        }, 3000);
 
         dispatch(fetchAgents());
       } else {
@@ -113,10 +110,10 @@ const AddAgent = ({ isOpen, onClose }) => {
             phoneNumber: "",
             location: "",
           }}
+          validationSchema={AddAgentSchema}
           onSubmit={handleSubmit}>
           {({ isSubmitting }) => (
             <Form className="space-y-4">
-              {/* First Row - Two Inputs */}
               <div className="flex gap-5">
                 <div className="flex flex-col w-1/2">
                   <label className="block text-md font-bold mb-1">
@@ -155,7 +152,6 @@ const AddAgent = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
-              {/* Second Row - Two Inputs */}
               <div className="flex gap-5">
                 <div className="flex flex-col w-1/2">
                   <label className="block text-md font-bold mb-1">
@@ -185,14 +181,13 @@ const AddAgent = ({ isOpen, onClose }) => {
                     className="w-full p-3 border border-gray-600 rounded-lg"
                   />
                   <ErrorMessage
-                    name="phone"
+                    name="phoneNumber"
                     component="div"
                     className="text-red-500 text-sm"
                   />
                 </div>
               </div>
 
-              {/* Third Row - Full Width Textarea */}
               <div className="flex flex-col">
                 <label className="block text-md font-bold mb-1">Address</label>
                 <Field
@@ -208,7 +203,6 @@ const AddAgent = ({ isOpen, onClose }) => {
                 />
               </div>
 
-              {/* Submit Button */}
               <div className="flex justify-end">
                 <button
                   type="submit"

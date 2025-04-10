@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
-import { FaRegCopy } from "react-icons/fa"; // Import from React Icons
-import { FaMapMarkerAlt, FaTrash } from "react-icons/fa"; // Import icons
-import DeactivateModal from "./deactivateModal";
+import { FaRegCopy } from "react-icons/fa"; 
+import { FaMapMarkerAlt, FaTrash } from "react-icons/fa";
 import ConfirmSuspendModal from "./confirmSuspendModal";
 import avatar from "../../../../assets/avatar.png";
 import FeedbackModal from "../../../../components/modal";
-
-import { useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
+import {  useDispatch } from "react-redux";
+import  { fetchUser } from "../../../../redux/UserSlice"
 
 const ViewDetails = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [copied, setCopied] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
   const [deleted, setDeleted] = useState(false);
-  const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState("");
   const [isConfirmSuspendModalOpen, setConfirmSuspendModalOpen] = useState("");
   const selectedUser = useSelector((state) => state.user.selectedUser);
   const [modalConfig, setModalConfig] = useState({
@@ -37,12 +37,13 @@ const ViewDetails = () => {
   const handleCopy = (text, field) => {
     navigator.clipboard.writeText(text);
     setCopied(field);
-    setTimeout(() => setCopied(""), 2000); // Reset after 2 seconds
+    setTimeout(() => setCopied(""), 2000); 
   };
 
   const handleDelete = () => {
+    console.log("Delete clicked");
+
     setDeleted(true);
-    setTimeout(() => setDeleted(false), 2000);
   };
 
   const handleConfirmSuspendClick = () => {
@@ -56,6 +57,8 @@ const ViewDetails = () => {
       console.error("No user selected");
       return;
     }
+    const token = sessionStorage.getItem("token");
+
 
     try {
       const response = await fetch(
@@ -64,21 +67,16 @@ const ViewDetails = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+
           },
           body: JSON.stringify({ userId: selectedUser.id }),
         }
       );
 
-      let result;
-      const contentType = response.headers.get("content-type");
+      const result = await response.text();
 
-      if (contentType && contentType.includes("application/json")) {
-        result = await response.json();
-      } else {
-        result = await response.text();
-      }
 
-      // ✅ Check if the response is a success
       if (response.ok) {
         setModalConfig({
           show: true,
@@ -87,11 +85,9 @@ const ViewDetails = () => {
           description: "You have successfully deactivated this user.",
           redirectPath: "/dashboard/users",
         });
+        dispatch(fetchUser());
 
-        setTimeout(() => {
-          onClose(); // ✅ Close modal
-          navigate("/dashboard/users"); // ✅ Redirect
-        }, 2000);
+        
       } else {
         setModalConfig({
           show: true,
@@ -165,14 +161,19 @@ const ViewDetails = () => {
               selectedUser?.firstName || selectedUser?.companyName || firstname,
           },
           { label: "Last Name", value: selectedUser?.lastName || lastname },
-          { label: "Username", value: selectedUser?.dryKlinUserName },
-          { label: "Email Address", value: selectedUser?.email },
+          { label: "Email Address",
+            value: selectedUser?.email?.length > 10
+            ? `${selectedUser?.email.slice(0, 16)}...`
+            : selectedUser?.email,
+            fullValue: selectedUser?.email,
+            },  
+          { label: "Username", value: selectedUser?.dryKlinUserName }, 
           { label: "Phone Number", value: selectedUser?.phoneNumber },
           {
             label: "Total no. of orders",
             value: selectedUser?.NumberOfOrders || "NIL",
           },
-        ].map(({ label, value }) => (
+        ].map(({ label, value, fullValue }) => (
           <div key={label} className="group w-full">
             <h1 className="text-[#E85C13] text-2xl font-bold relative">
               {label}
@@ -181,7 +182,7 @@ const ViewDetails = () => {
               <h2 className="text-1xl">{value}</h2>
               <FaRegCopy
                 className="ml-8 h-5 w-5 text-gray-400 cursor-pointer hover:text-black"
-                onClick={() => handleCopy(value, label)}
+                onClick={() => handleCopy(fullValue || value, label)}
               />
               {copied === label && (
                 <span className="text-sm text-[#E85C13]">Copied!</span>
@@ -194,50 +195,34 @@ const ViewDetails = () => {
           <div className="container p-6 flex flex-col md:flex-row md:justify-between gap-6 mt-5 text-black">
       
       {/* Section 1 */}
+      {!deleted && (
+
       
-      <div className="group w-full md:w-auto">
-        <h1 className="text-black text-lg font-bold relative flex items-center gap-2">
-          <FaMapMarkerAlt className="text-red-500 h-5 w-5" /> {/* Location Icon */}
-          {selectedUser?.state || selectedUser?.location || selectedUser?.address}
-        </h1>
-        <div className="flex items-center gap-2 mt-5">
-          <h2 className="text-xl">{selectedUser?.state || selectedUser?.location || selectedUser?.address}</h2>
-          <div className="flex items-center gap-1 ml-8 cursor-pointer" onClick={handleDelete}>
-            <FaTrash className="h-5 w-5 text-[#E85C13] hover:text-red-600" /> {/* Delete Icon */}
-            <span className="text-sm text-[#E85C13] hover:text-red-600">Delete</span>
-          </div>
-        </div>
-      </div>
       <div className="group w-full md:w-auto">
         <h1 className="text-black text-lg font-bold relative flex items-center gap-2">
           <FaMapMarkerAlt className="text-red-500 h-5 w-5" /> {/* Location Icon */}
          {selectedUser?.state || selectedUser?.location || selectedUser?.address}
         </h1>
-        <div className="flex items-center gap-2 mt-5">
-          <h2 className="text-xl">{selectedUser?.state || selectedUser?.location || selectedUser?.address}  </h2>
-          <div className="flex items-center gap-1 ml-8 cursor-pointer" onClick={handleDelete}>
-            <FaTrash className="h-5 w-5 text-[#E85C13] hover:text-red-600" /> {/* Delete Icon */}
-            <span className="text-sm text-[#E85C13] hover:text-red-600">Delete</span>
-          </div>
-        </div>
+  <div className="flex items-center gap-2 mt-5">
+    <h2 className="text-xl">
+      {selectedUser?.state || selectedUser?.location || selectedUser?.address}
+    </h2>
+    <div
+      className="flex items-center gap-1 ml-8 cursor-pointer"
+      onClick={handleDelete}
+    >
+      <FaTrash className="h-5 w-5 text-[#E85C13] hover:text-red-600" />
+      <span className="text-sm text-[#E85C13] hover:text-red-600">Delete</span>
+    </div>
+  </div>
+
       </div>
+        )}
       
   
       </div>
       <div className="container px-10 mt-20 flex justify-end text-black">
   <div className="flex items-center gap-5"> 
-    {/* Delete Text */}
-    
-    {/* <button className="text-xl text-[#E85C13]" */}
-    {/* onClick={handleConfirmDeleteClick}>Suspend User</button> */}
-
-    {/* Deactivate Button */}
-    {/* <button className="bg-[#E85C19] text-white px-8 py-4 rounded-lg hover:bg-[#c74e10] transition flex items-center gap-2" */}
-    {/* onClick={handleDeactivateClick}> */}
-                  {/* {isLoading ? 'Please Wait...' : 'Deactivate User'}               */}
-                  {/* </button> */}
-
-                  {/* Suspend Button */}
 <button 
   className={`text-xl ${selectedUser?.suspended === true ? 'text-gray-400 cursor-not-allowed' : 'text-[#E85C13]'}`}
   onClick={handleConfirmSuspendClick}
@@ -246,8 +231,6 @@ const ViewDetails = () => {
   {selectedUser?.suspended === true ? 'User Suspended' : 'Suspend User'}
 </button>
 
-
-{/* Deactivate Button */}
 <button 
   className={`bg-[#E85C19] text-white px-8 py-4 rounded-lg flex items-center gap-2 transition 
              ${selectedUser?.enabled === false ? 'bg-gray-400 cursor-not-allowed' : 'hover:bg-[#c74e10]'}`}
