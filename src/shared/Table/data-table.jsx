@@ -40,7 +40,6 @@ export function DataTable({
       );
     }
 
-    // Default case for other routes
     return (
       item.companyName?.toLowerCase().includes(term) ||
       item.firstName?.toLowerCase().includes(term) ||
@@ -50,12 +49,9 @@ export function DataTable({
     );
   })
 : [];
-  console.log ('data', filteredData)
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
-  // Get items for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  // console.log("data:", data);
   const currentItems = showFooter
     ? filteredData?.slice(startIndex, endIndex)
     : filteredData;

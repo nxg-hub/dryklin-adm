@@ -5,11 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchSubAdmins } from "../../../../redux/Sub-adminSlice";
 
 const ConfirmSuspendModal = ({onClose, back}) => {
-      const [isLoading, setIsLoading] = useState (false)
-    const dispatch = useDispatch();
-  
-      // const navigate = useNavigate();
-  
+  const [isLoading, setIsLoading] = useState (false)
+  const dispatch = useDispatch();  
   const selectedSubadmin = useSelector((state) => state.subadmin.selectedSubadmin);
           const [modalConfig, setModalConfig] = useState({
                 show: false,

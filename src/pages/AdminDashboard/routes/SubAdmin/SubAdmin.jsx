@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DataTable } from "../../../../shared/Table/data-table";
 import { useNavigate } from "react-router-dom";
 import avatar from "../../../../assets/avatar.png"
@@ -10,19 +10,14 @@ import { setSelectedSubadmin } from "../../../../redux/Sub-adminSlice";
 
 
 const SubAdmin = () => {
-  const dispatch = useDispatch();
-
+    const dispatch = useDispatch();
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
     const [isAddSAModalOpen, setIsAddSAModalOpen] = useState("");
     const adminDetails = useSelector((state) => state.admin.adminDetails);
-
     const subadmins = useSelector((state) => state.subadmin.subadmins);
-    // const sortedSubadmins = subadmins?.data.slice().reverse(); 
 
-
-console.log (subadmins)
     const filters = [
       { label: "Select", value: "" },
       { label: "Customer", value: "customer" },
@@ -43,21 +38,21 @@ console.log (subadmins)
       setIsAddSAModalOpen(true);
     };
 
-    const filteredSubadmins = Array.isArray(subadmins)
-    ? subadmins.filter((subadmin) =>
-        subadmin?.firstName?.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : [];
+    const dateCreated = subadmins?.dateCreated;
 
-
-    console.log ('data', filteredSubadmins)
+    let formattedDate = "";
+    
+    if (Array.isArray(dateCreated) && dateCreated.length >= 3) {
+      const [year, month, day] = dateCreated;
+      formattedDate = `${month}/${day}/${year}`;
+    }
+  console.log ('date', formattedDate)
 
     const SubAdminColumns = [
       {
         key: "firstName",
         title: "Name",
          render: (subadmins, row) => {
-          console.log('sb',subadmins)
                 return (
                   <div className="flex items-center gap-3">
                     <img
@@ -73,16 +68,21 @@ console.log (subadmins)
       },
      { key: "email", title: "Email Address" },
      { key: "phoneNumber", title: "Contact Number" },
-     { key: "date", title: "Date Created" }
-]
-//  const Data = [
-//   { "firstName": "Olivia Pat",
-//     "email": "OliviaPat@gmail.com",
-//     "number": "09123458697",
-//     "date" : "20/4/2025"
-//   }
-//  ]
 
+     { key: "date", title: "Date Created",
+      render: (subadmins, row) => {
+        const dateCreated = row.dateCreated;
+
+    let formattedDate = "";
+    
+    if (Array.isArray(dateCreated) && dateCreated.length >= 3) {
+      const [year, month, day] = dateCreated;
+      formattedDate = `${month}/${day}/${year}`;
+    }
+    return <span>{formattedDate}</span>;
+      }
+      }
+]
 
 
   return (<div className="container mx-auto py-6 px-4">
@@ -94,12 +94,10 @@ console.log (subadmins)
   />
 
 <div className="mt-8 flex items-center justify-between">
-  {/* Left: Search Filter */}
   <div className="flex">
     <SearchFilter onSearch={handleSearch} filter={filters} />
   </div>
 
-  {/* Right: Add Sub-Admin Button */}
   <button
     className=" mb-5 bg-[#E85C19] text-white font-bold px-3 py-2 rounded-lg 
         hover:bg-[#c74e10] transition 
@@ -133,10 +131,10 @@ console.log (subadmins)
                         dispatch(
                                           setSelectedSubadmin({
                                             userId: row.id,
-                                            data: row, // Store full user details
+                                            data: row, 
                                           })
                                         );
-                        navigate("/dashboard/subAdmins/sub-admin-details"); // Navigate to details page
+                        navigate("/dashboard/subAdmins/sub-admin-details"); 
                       }}
                       className="text-[#e86317] text-sm hover:underline">
                       View Details
@@ -145,8 +143,7 @@ console.log (subadmins)
                 }}
                 onRowClick={(row) => console.log("Row clicked:", row)}
               />
-            </div>
-          
+            </div>        
         
   </div>
   )

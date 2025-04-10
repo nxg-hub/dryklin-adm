@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
-import { FaRegCopy } from "react-icons/fa"; // Import from React Icons
-import { FaMapMarkerAlt, FaTrash } from "react-icons/fa"; // Import icons
+import { FaRegCopy } from "react-icons/fa"; 
 import avatar from "../../../../assets/avatar.png";
 import FeedbackModal from "../../../../components/modal";
 import { fetchSubAdmins } from "../../../../redux/Sub-adminSlice";
@@ -14,9 +13,6 @@ const SubAdminDetails = () => {
   const [copied, setCopied] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-
-  const [deleted, setDeleted] = useState(false);
-  const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState("");
   const [isConfirmSuspendModalOpen, setConfirmSuspendModalOpen] = useState("");
   const selectedSubadmin = useSelector((state) => state.subadmin.selectedSubadmin);
   const [modalConfig, setModalConfig] = useState({
@@ -25,8 +21,6 @@ const SubAdminDetails = () => {
     title: "",
     description: "",
   });
-
-  
 
   const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
 
@@ -37,7 +31,7 @@ const SubAdminDetails = () => {
   const handleCopy = (text, field) => {
     navigator.clipboard.writeText(text);
     setCopied(field);
-    setTimeout(() => setCopied(""), 2000); // Reset after 2 seconds
+    setTimeout(() => setCopied(""), 2000); 
   };
 
   
@@ -87,7 +81,6 @@ const SubAdminDetails = () => {
         result = await response.text();
       }
 
-      // ✅ Check if the response is a success
       if (response.ok) {
         setModalConfig({
           show: true,
@@ -158,28 +151,37 @@ const SubAdminDetails = () => {
               selectedSubadmin?.firstName || selectedUser?.companyName || firstname,
           },
           { label: "Last Name", value: selectedSubadmin?.lastName || lastname },
-          { label: "Email Address", value: selectedSubadmin?.email },
+          { label: "Email Address",
+             value: selectedSubadmin?.email?.length > 10
+             ? `${selectedSubadmin?.email.slice(0, 16)}...`
+             : selectedSubadmin?.email,
+             fullValue: selectedSubadmin?.email,
+             },
           { label: "Phone Number", value: selectedSubadmin?.phoneNumber },
           {
             label: "Password",
             value: selectedSubadmin?.password?.length > 10
               ? `${selectedSubadmin.password.slice(0, 10)}...`
-              : selectedSubadmin?.password
+              : selectedSubadmin?.password,
+            fullValue: selectedSubadmin?.password, 
+
           },
           { label: "Date Created", value: formattedDate },
 
           
-        ].map(({ label, value }) => (
+        ].map(({ label, value, fullValue }) => (
           <div key={label} className="group w-full">
             <h1 className="text-[#E85C13] text-2xl font-bold relative">
               {label}
             </h1>
+            
             <div className="flex items-center gap-2 mt-3">
-              <h2 className="text-1xl">{value}</h2>
+              <h2 className="text-1xl">{value}</h2>  
               <FaRegCopy
                 className="ml-8 h-5 w-5 text-gray-400 cursor-pointer hover:text-black"
-                onClick={() => handleCopy(value, label)}
+                onClick={() => handleCopy(fullValue || value, label)}
               />
+
               {copied === label && (
                 <span className="text-sm text-[#E85C13]">Copied!</span>
               )}
@@ -196,7 +198,7 @@ const SubAdminDetails = () => {
   onClick={handleConfirmSuspendClick}
   disabled={selectedSubadmin?.suspended === true}
 >
-  {selectedSubadmin?.suspended === true ? 'User Suspended' : 'Suspend User'}
+  {selectedSubadmin?.suspended === true ? ' Suspended' : 'Suspend'}
 </button>
 
 
@@ -210,12 +212,10 @@ const SubAdminDetails = () => {
   {isLoading 
     ? 'Please Wait...' 
     : selectedSubadmin?.enabled === false 
-      ? 'User Deactivated' 
-      : 'Deactivate User'}
+      ? 'Deactivated' 
+      : 'Deactivate'}
 </button>
-
-
-    
+  
       {isConfirmSuspendModalOpen && (
         <ConfirmSuspendModal
           isOpen={isConfirmSuspendModalOpen}

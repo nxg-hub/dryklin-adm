@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Field, Formik, Form, ErrorMessage } from 'formik';
 import { X } from "lucide-react"; 
-import { AddSPSchema } from "./schema/AddSPschema";
+import { AddSPSchema } from "./schema/AddSPSchema";
 import FeedbackModal from "../../../../components/modal";
 import { fetchServicePartners } from "../../../../redux/UserSlice";
 import { useDispatch } from "react-redux"
@@ -55,8 +55,8 @@ if (response.ok && result.id) {
     onClose
 });
 setTimeout(() => {
-    onClose();  // ✅ Properly closing the modal
-  }, 2000);  // Wait for 2 seconds before closing (optional)
+    onClose();  
+  }, 3000);  
 
   dispatch (fetchServicePartners());
 } else {

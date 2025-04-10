@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { FaSearch, FaPlus } from "react-icons/fa";
 import { DataTable } from "../../../../shared/Table/data-table";
 import AddServicePartner from "./AddServicePartner";
 import AddAgent from "./AddAgent";
@@ -10,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSelectedUser } from "../../../../redux/UserSlice";
 import Header from "../../../../shared/Section-Header/header";
 import { fetchWalletDetails } from "../../../../redux/WalletSlice";
-import { StatusBadge } from "../../../../shared/Status-Badge/status-badge";
 
 
 const UserManagement = () => {
@@ -172,8 +170,6 @@ const UserManagement = () => {
 
   return (
     <div className="container mx-auto py-6 px-4">
-              <StatusBadge status="20000" variant='PROGRESS'/>
-
       <Header
         title="User Management"
         
@@ -200,7 +196,6 @@ const UserManagement = () => {
                 ? handleAddSPClick
                 : handleAddAgentClick
             }>
-            {/* <FaPlus size={20}  /> */}
             {activeSection === "servicePartners"
               ? "Add Service Partner"
               : "Add Delivery Agent"}
@@ -272,11 +267,11 @@ const UserManagement = () => {
               href="#"
               className="text-[#e86317] text-sm hover:underline"
               onClick={(e) => {
-                e.preventDefault(); // Prevent default navigation
+                e.preventDefault(); 
                 dispatch(
                   setSelectedUser({
                     userId: row.id,
-                    data: row, // Store full user details
+                    data: row, 
                   })
                 );
                 navigate("/dashboard/users/viewdetails");

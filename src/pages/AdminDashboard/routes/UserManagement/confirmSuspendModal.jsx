@@ -1,55 +1,50 @@
 import { useState } from "react";
 import { X } from "lucide-react"; // Close button icon
 import FeedbackModal from "../../../../components/modal";
-import{ useSelector } from "react-redux"
-import { useNavigate } from 'react-router-dom';
-
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "../../../../redux/UserSlice";
 
 const ConfirmSuspendModal = ({onClose, back}) => {
       const [isLoading, setIsLoading] = useState (false)
-  
-      const navigate = useNavigate();
-  
-       const [isDeleteModalOpen, setIsDeleteModalOpen] = useState('')
-         const selectedUser = useSelector((state) => state.user.selectedUser);
-          const [modalConfig, setModalConfig] = useState({
+      const dispatch = useDispatch();
+      const selectedUser = useSelector((state) => state.user.selectedUser);
+      const [modalConfig, setModalConfig] = useState({
                 show: false,
                 type: "success",
                 title: "",
                 description: "",
             });
-            const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
+      const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
         
 
   const handleSuspend = async () => {
     setIsLoading(true)
+
+    const token = sessionStorage.getItem("token");
+
      try {
         const response = await fetch(`${API_BASE_URL}/api/v1/auth/${selectedUser?.id}/suspend`, {
-          method: 'POST', 
+          method: 'PUT', 
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+
           },
           body: JSON.stringify(selectedUser?.id)
         });
   
-        const result = await response.json();
+        const result = await response.text();
         console.log (result)
     
-  if (response.ok && result.message === "User has been suspended") {
+  if (response.ok) {
     setModalConfig({
       show: true,
       type: "success",
       title: "User suspended",
-      description: response.message || "You have been successfully suspended this user.",
+      description:"You have been successfully suspended this user.",
       redirectPath: "/dashboard/users"
-
-
   });
-  setTimeout(() => {
-    onClose();  
-  }, 2000); 
-
-  navigate ('/dashboard/users')
+ dispatch(fetchUser());
 
   
 
@@ -58,12 +53,13 @@ const ConfirmSuspendModal = ({onClose, back}) => {
       show: true,
       type: "error",
       title: "Action failed",
-      description: response.message || "Failed to suspend user.",
+      description: result.message || "Failed to suspend user.",
       redirectPath: onClose,
   });
   }
   } catch (err) {
-  const errorMessage = err.response?.data?.message || "An error occurred. Please try again later.";
+  const errorMessage = err.result?.data?.message;
+  console.log(err)
   
   setModalConfig({
   show: true,
