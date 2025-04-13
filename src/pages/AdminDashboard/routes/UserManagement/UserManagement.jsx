@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { FaSearch, FaPlus } from "react-icons/fa";
 import { DataTable } from "../../../../shared/Table/data-table";
 import AddServicePartner from "./AddServicePartner";
 import AddAgent from "./AddAgent";
@@ -9,6 +8,8 @@ import SearchFilter from "../../../../shared/Searchbar/SearchFilter";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedUser } from "../../../../redux/UserSlice";
 import Header from "../../../../shared/Section-Header/header";
+import { fetchWalletDetails } from "../../../../redux/WalletSlice";
+
 
 const UserManagement = () => {
   const [activeSection, setActiveSection] = useState("customers");
@@ -31,7 +32,6 @@ const UserManagement = () => {
     { label: "Order Status", value: "orderStatus" },
   ];
 
-  // Handle search and filter changes
   const handleSearch = (term, filter) => {
     setSearchTerm(term);
     setFilterBy(filter);
@@ -54,7 +54,7 @@ const UserManagement = () => {
   useEffect(() => {
     user?.forEach((user) => {
       if (user.walletId && !walletBalances[user.walletId]) {
-        // dispatch(fetchWalletDetails(user.walletId));
+        dispatch(fetchWalletDetails(user.walletId));
       }
     });
   }, [user, dispatch, walletBalances]);
@@ -172,6 +172,7 @@ const UserManagement = () => {
     <div className="container mx-auto py-6 px-4">
       <Header
         title="User Management"
+        
         userName={adminDetails?.firstName}
         userEmail={adminDetails?.email}
         userImage={adminDetails?.profileImage || avatar}
@@ -195,7 +196,6 @@ const UserManagement = () => {
                 ? handleAddSPClick
                 : handleAddAgentClick
             }>
-            {/* <FaPlus size={20}  /> */}
             {activeSection === "servicePartners"
               ? "Add Service Partner"
               : "Add Delivery Agent"}
@@ -253,7 +253,7 @@ const UserManagement = () => {
             ? SPColumns
             : activeSection === "deliveryAgents"
             ? DAColumns
-            : [] // Default to an empty array or your fallback case
+            : []
         }
         data={selectedData}
         searchTerm={searchTerm}
@@ -267,11 +267,11 @@ const UserManagement = () => {
               href="#"
               className="text-[#e86317] text-sm hover:underline"
               onClick={(e) => {
-                e.preventDefault(); // Prevent default navigation
+                e.preventDefault(); 
                 dispatch(
                   setSelectedUser({
                     userId: row.id,
-                    data: row, // Store full user details
+                    data: row, 
                   })
                 );
                 navigate("/dashboard/users/viewdetails");

@@ -1,39 +1,38 @@
 import { useState } from "react";
-import { X } from "lucide-react"; // Close button icon
+import { X } from "lucide-react"; 
 import FeedbackModal from "../../../../components/modal";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUser } from "../../../../redux/UserSlice";
+import { fetchSubAdmins } from "../../../../redux/Sub-adminSlice";
 
 const ConfirmSuspendModal = ({onClose, back}) => {
-      const [isLoading, setIsLoading] = useState (false)
-      const dispatch = useDispatch();
-      const selectedUser = useSelector((state) => state.user.selectedUser);
-      const [modalConfig, setModalConfig] = useState({
+  const [isLoading, setIsLoading] = useState (false)
+  const dispatch = useDispatch();  
+  const selectedSubadmin = useSelector((state) => state.subadmin.selectedSubadmin);
+          const [modalConfig, setModalConfig] = useState({
                 show: false,
                 type: "success",
                 title: "",
                 description: "",
             });
-      const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
+            const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
         
 
   const handleSuspend = async () => {
     setIsLoading(true)
-
     const token = sessionStorage.getItem("token");
 
      try {
-        const response = await fetch(`${API_BASE_URL}/api/v1/auth/${selectedUser?.id}/suspend`, {
-          method: 'PUT', 
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/auth/subadmins/suspend?email=${selectedSubadmin?.email}`,
+        {          method: 'POST', 
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
 
           },
-          body: JSON.stringify(selectedUser?.id)
         });
   
-        const result = await response.text();
+        const result = await response.json();
         console.log (result)
     
   if (response.ok) {
@@ -41,25 +40,28 @@ const ConfirmSuspendModal = ({onClose, back}) => {
       show: true,
       type: "success",
       title: "User suspended",
-      description:"You have been successfully suspended this user.",
-      redirectPath: "/dashboard/users"
-  });
- dispatch(fetchUser());
+      description:  "You have been successfully suspended sub-admin",
+      redirectPath: "/dashboard/subAdmins"
 
+
+  });
+         dispatch(fetchSubAdmins());
   
 
-  } else {
+} else {
   setModalConfig({
-      show: true,
-      type: "error",
-      title: "Action failed",
-      description: result.message || "Failed to suspend user.",
-      redirectPath: onClose,
+    show: true,
+    type: "error",
+    title: "Action failed",
+    description:
+      typeof result === "string"
+        ? result
+        : result.message || "Failed to suspend sub-admin.",
+    redirectPath: null,
   });
-  }
+}
   } catch (err) {
-  const errorMessage = err.result?.data?.message;
-  console.log(err)
+  const errorMessage = err.message;
   
   setModalConfig({
   show: true,
@@ -93,7 +95,7 @@ const ConfirmSuspendModal = ({onClose, back}) => {
         <div className="flex items-center justify-center">
 
         <div className="flex items-center justify-center mt-10 text-red-600 font-bold text-2xl">
-Suspend User
+Suspend Sub-Admin
     </div>
     </div>
     <div className="mt-5 flex items-center  text-lg text-gray-500 justify-center">Are you sure you want to suspend this account? This action cannot be undone.</div>

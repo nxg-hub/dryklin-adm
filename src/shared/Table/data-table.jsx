@@ -21,21 +21,37 @@ export function DataTable({
 }) {
   const location = useLocation();
   const currentRoute = location.pathname;
-  const filteredData = data.filter((item) =>
-    //apply full filter features when in this route
-    currentRoute === "/dashboard/orderManagement"
-      ? item[filterBy]?.toLowerCase().includes(searchTerm.toLowerCase())
-      : item.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.id?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredData = Array.isArray(data)
+  ? data.filter((item) => {
+    const term = searchTerm.toLowerCase();
+
+    if (currentRoute === "/dashboard/orderManagement") {
+      return item[filterBy]?.toLowerCase().includes(term) ||
+      item.customerName?.toLowerCase().includes(term) ||
+      item.id?.toLowerCase().includes(term)
+    }
+
+    if (currentRoute === "/dashboard/subAdmins") {
+      return (
+        item.firstName?.toLowerCase().includes(term) ||
+        item.lastName?.toLowerCase().includes(term) ||
+        item.email?.toLowerCase().includes(term) ||
+        item.phoneNumber?.toLowerCase().includes(term)
+      );
+    }
+
+    return (
+      item.companyName?.toLowerCase().includes(term) ||
+      item.firstName?.toLowerCase().includes(term) ||
+      item.lastName?.toLowerCase().includes(term) ||
+      item.fullName?.toLowerCase().includes(term) ||
+      item.id?.toLowerCase().includes(term)
+    );
+  })
+: [];
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
-  // Get items for the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  // console.log("data:", data);
   const currentItems = showFooter
     ? filteredData?.slice(startIndex, endIndex)
     : filteredData;

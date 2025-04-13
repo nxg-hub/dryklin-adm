@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import { Field, Formik, Form, ErrorMessage } from "formik";
 import { X } from "lucide-react"; // Close button icon
 import FeedbackModal from "../../../../components/modal";
+import { useDispatch, useSelector } from "react-redux";
+import { AddSubadminSchema } from "../UserManagement/schema/AddSubadminSchema";
+import { fetchSubAdmins } from "../../../../redux/Sub-adminSlice";
 
 const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
-const ADD_AGENT_URL = import.meta.env.VITE_ADD_AGENT;
+const ADD_SUB_ADMIN_URL = import.meta.env.VITE_ADD_SUB_ADMIN;
 
 const AddSubAdmin = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+
 
 
   const [modalConfig, setModalConfig] = useState({
@@ -19,25 +24,35 @@ const AddSubAdmin = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
-    console.log("Form values:", values); // Debugging
+    console.log("Form values:", values); 
 
-    const fullName = values.fullName || "";
+
+    const fullName = values.name || "";
     const [firstName = "", lastName = ""] = fullName.trim().split(" ");
-
-    // Reconstruct fullName before sending to the backend
+  
+    
     const requestBody = {
-      fullName: `${values.firstName} ${values.lastName}`.trim(),
+      firstName,
+      lastName,
       email: values.email,
       phoneNumber: values.phoneNumber,
-      location: values.location,
-    };
+      password: values.password,
+      confirmPassword: values.confirmPassword,
+      dryKlinUserName: values.dryKlinUserName,
+      userType: 'SUB_ADMIN',
+      countryCode: ''
+};
     console.log("Request Body:", requestBody);
 
+    const token = sessionStorage.getItem("token");
+
     try {
-      const response = await fetch(`${API_BASE_URL}${ADD_AGENT_URL}`, {
+      const response = await fetch(`${API_BASE_URL}${ADD_SUB_ADMIN_URL}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+
         },
         body: JSON.stringify(requestBody),
       });
@@ -49,22 +64,22 @@ const AddSubAdmin = ({ isOpen, onClose }) => {
         setModalConfig({
           show: true,
           type: "success",
-          title: "Delivery Agent Added",
+          title: "Sub-admin account created sucessfully.",
           description:
             response.message ||
-            "You have been successfully added a new delivery agent.",
+            "You have successfully added a new sub-admin. They will get an email with their login credentials.",
           redirectPath: "/dashboard/users",
         });
         setTimeout(() => {
           onClose();
         }, 2000);
-
+       dispatch(fetchSubAdmins());
       } else {
         setModalConfig({
           show: true,
           type: "error",
           title: "Action failed",
-          description: response.message || "Failed to add delivery agent.",
+          description: response.message || "Failed to add sub-admin.",
           redirectPath: onClose,
         });
       }
@@ -104,11 +119,13 @@ const AddSubAdmin = ({ isOpen, onClose }) => {
         <Formik
           initialValues={{
             email: "",
-            firstName: "",
-            lastName: "",
+            name: "",
+            dryKlinUserName: "",
+            password: "",
+            confirmPassword: "",
             phoneNumber: "",
-            location: "",
           }}
+          validationSchema={AddSubadminSchema}
           onSubmit={handleSubmit}>
           {({ isSubmitting }) => (
             <Form className="space-y-4">
@@ -116,17 +133,16 @@ const AddSubAdmin = ({ isOpen, onClose }) => {
               <div className="flex gap-5">
                 <div className="flex flex-col w-1/2">
                   <label className="block text-md font-bold mb-1">
-                    {" "}
-                    First Name
+                    Full Name
                   </label>
                   <Field
                     type="text"
-                    name="firstName"
-                    placeholder="Input Agent's First Name"
+                    name="name"
+                    placeholder="Input Full Name"
                     className="w-full p-3 border border-gray-600 rounded-lg"
                   />
                   <ErrorMessage
-                    name="firstName"
+                    name="name"
                     component="div"
                     className="text-red-500 text-sm"
                   />
@@ -134,17 +150,16 @@ const AddSubAdmin = ({ isOpen, onClose }) => {
 
                 <div className="flex flex-col w-1/2">
                   <label className="block text-md font-bold mb-1">
-                    {" "}
-                    Last Name
+                    Username
                   </label>
                   <Field
                     type="text"
-                    name="lastName"
-                    placeholder="Input Agent's Last Name"
+                    name="dryKlinUserName"
+                    placeholder="Input username"
                     className="w-full p-3 border border-gray-600 rounded-lg"
                   />
                   <ErrorMessage
-                    name="lastName"
+                    name="dryKlinUserName"
                     component="div"
                     className="text-red-500 text-sm"
                   />
@@ -181,7 +196,7 @@ const AddSubAdmin = ({ isOpen, onClose }) => {
                     className="w-full p-3 border border-gray-600 rounded-lg"
                   />
                   <ErrorMessage
-                    name="phone"
+                    name="phoneNumber"
                     component="div"
                     className="text-red-500 text-sm"
                   />
@@ -189,19 +204,35 @@ const AddSubAdmin = ({ isOpen, onClose }) => {
               </div>
 
               {/* Third Row - Full Width Textarea */}
-              <div className="flex flex-col">
-                <label className="block text-md font-bold mb-1">Address</label>
+              <div className="flex gap-5">
+              <div className="flex flex-col w-1/2">         
+                     <label className="block text-md font-bold mb-1">Create Password</label>
                 <Field
-                  as="textarea"
-                  name="location"
-                  placeholder="Input Address"
-                  className="w-full p-3 border border-gray-600 rounded-lg min-h-[120px] resize-none"
-                />
+                  type="text"
+                  name="password"
+                  placeholder="Input Password"
+                  className="w-full p-3 border border-gray-600 rounded-lg"
+                  />
                 <ErrorMessage
-                  name="location"
+                  name="password"
                   component="div"
                   className="text-red-500 text-sm"
                 />
+              </div>
+              <div className="flex flex-col w-1/2">         
+                <label className="block text-md font-bold mb-1">Re-enter Password</label>
+                <Field
+                  type="text"
+                  name="confirmPassword"
+                  placeholder="Re-enter Password"
+                  className="w-full p-3 border border-gray-600 rounded-lg"
+                  />
+                <ErrorMessage
+                  name="confirmPassword"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+              </div>
               </div>
 
               {/* Submit Button */}

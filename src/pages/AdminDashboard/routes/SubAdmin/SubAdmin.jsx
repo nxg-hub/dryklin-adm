@@ -1,21 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DataTable } from "../../../../shared/Table/data-table";
 import { useNavigate } from "react-router-dom";
 import avatar from "../../../../assets/avatar.png"
 import Header from "../../../../shared/Section-Header/header"
 import SearchFilter from "../../../../shared/Searchbar/SearchFilter";
-import { useDispatch, useSelector } from "react-redux";
 import AddSubAdmin from "./AddSubAdmin";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedSubadmin } from "../../../../redux/Sub-adminSlice";
+
 
 const SubAdmin = () => {
+    const dispatch = useDispatch();
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
     const [isAddSAModalOpen, setIsAddSAModalOpen] = useState("");
-
     const adminDetails = useSelector((state) => state.admin.adminDetails);
-
-
+    const subadmins = useSelector((state) => state.subadmin.subadmins);
 
     const filters = [
       { label: "Select", value: "" },
@@ -36,11 +37,22 @@ const SubAdmin = () => {
     const handleAddSAClick = () => {
       setIsAddSAModalOpen(true);
     };
+
+    const dateCreated = subadmins?.dateCreated;
+
+    let formattedDate = "";
+    
+    if (Array.isArray(dateCreated) && dateCreated.length >= 3) {
+      const [year, month, day] = dateCreated;
+      formattedDate = `${month}/${day}/${year}`;
+    }
+  console.log ('date', formattedDate)
+
     const SubAdminColumns = [
       {
         key: "firstName",
         title: "Name",
-         render: (Data, row) => {
+         render: (subadmins, row) => {
                 return (
                   <div className="flex items-center gap-3">
                     <img
@@ -55,17 +67,22 @@ const SubAdmin = () => {
               },          
       },
      { key: "email", title: "Email Address" },
-     { key: "number", title: "Contact Number" },
-     { key: "date", title: "Date Created" }
-]
- const Data = [
-  { "firstName": "Olivia Pat",
-    "email": "OliviaPat@gmail.com",
-    "number": "09123458697",
-    "date" : "20/4/2025"
-  }
- ]
+     { key: "phoneNumber", title: "Contact Number" },
 
+     { key: "date", title: "Date Created",
+      render: (subadmins, row) => {
+        const dateCreated = row.dateCreated;
+
+    let formattedDate = "";
+    
+    if (Array.isArray(dateCreated) && dateCreated.length >= 3) {
+      const [year, month, day] = dateCreated;
+      formattedDate = `${month}/${day}/${year}`;
+    }
+    return <span>{formattedDate}</span>;
+      }
+      }
+]
 
 
   return (<div className="container mx-auto py-6 px-4">
@@ -77,12 +94,10 @@ const SubAdmin = () => {
   />
 
 <div className="mt-8 flex items-center justify-between">
-  {/* Left: Search Filter */}
   <div className="flex">
     <SearchFilter onSearch={handleSearch} filter={filters} />
   </div>
 
-  {/* Right: Add Sub-Admin Button */}
   <button
     className=" mb-5 bg-[#E85C19] text-white font-bold px-3 py-2 rounded-lg 
         hover:bg-[#c74e10] transition 
@@ -102,7 +117,7 @@ const SubAdmin = () => {
    <DataTable
                 columns={SubAdminColumns}
                 showFooter={true}
-                data={Data}
+                data={subadmins}
                 searchTerm={searchTerm}
                 currentPage={currentPage}
                 onPageChange={onPageChange}
@@ -113,7 +128,13 @@ const SubAdmin = () => {
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        navigate("/dashboard/subAdmins/sub-admin-details"); // Navigate to details page
+                        dispatch(
+                                          setSelectedSubadmin({
+                                            userId: row.id,
+                                            data: row, 
+                                          })
+                                        );
+                        navigate("/dashboard/subAdmins/sub-admin-details"); 
                       }}
                       className="text-[#e86317] text-sm hover:underline">
                       View Details
@@ -122,8 +143,7 @@ const SubAdmin = () => {
                 }}
                 onRowClick={(row) => console.log("Row clicked:", row)}
               />
-            </div>
-          
+            </div>        
         
   </div>
   )
