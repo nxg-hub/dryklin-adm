@@ -20,7 +20,7 @@ export default function Home() {
   const loading = useSelector((state) => state.orderManagement.loading);
   const error = useSelector((state) => state.orderManagement.error);
   const success = useSelector((state) => state.orderManagement.success);
-  const { user, servicePartners, agents } = useSelector((state) => state.user);
+  const { users, servicePartners, agents } = useSelector((state) => state.user);
   const adminDetails = useSelector((state) => state.admin.adminDetails);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function Home() {
   const statsData = [
     {
       title: "Total No. of Users",
-      value: user.length,
+      value: users.length,
       link: "/dashboard/users",
     },
     {

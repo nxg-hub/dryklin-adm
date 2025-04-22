@@ -7,12 +7,12 @@ import avatar from "../../../../assets/avatar.png";
 
 const AnalyticsAndReports = () => {
   const orders = useSelector((state) => state.orderManagement.orders);
-  const { user, servicePartners, agents } = useSelector((state) => state.user);
+  const { users, servicePartners, agents } = useSelector((state) => state.user);
   const adminDetails = useSelector((state) => state.admin.adminDetails);
   const statsData = [
     {
       title: "Total No. of Users",
-      value: user.length,
+      value: users.length,
       link: "/dashboard/users",
     },
     {
