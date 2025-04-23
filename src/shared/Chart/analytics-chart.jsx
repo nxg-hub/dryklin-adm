@@ -60,7 +60,7 @@ export function AnalyticsChart({
             <TabsTrigger
               key={tab.id}
               value={tab.id}
-              className="px-0 py-2 mr-6 data-[state=active]:border-b-2 data-[state=active]:border-[#e86317] data-[state=active]:text-[#e86317] rounded-none text-[#667085] bg-transparent">
+              className="px-0 py-2 cursor-pointer mr-6 data-[state=active]:border-b-2 data-[state=active]:border-[#e86317] data-[state=active]:text-[#e86317] rounded-none text-[#667085] bg-transparent">
               {tab.label}
             </TabsTrigger>
           ))}
@@ -68,40 +68,7 @@ export function AnalyticsChart({
 
         {tabs.map((tab) => (
           <TabsContent key={tab.id} value={tab.id} className="mt-0">
-            {data[tab.id] &&
-            //   <div className="h-64 relative">
-            //     <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-[#667085]">
-            //       {yAxis.map((y, i) => {
-            //         return <div key={i}>{y}</div>;
-            //       })}
-            //     </div>
-            //     <div className="ml-8 h-full flex items-end">
-            //       {data[tab.id].values.map((value, index) => (
-            //         <div
-            //           key={index}
-            //           className="flex flex-col items-center mx-2 flex-1">
-            //           <div
-            //             className="w-full bg-[#fdc842] rounded-t"
-            //             style={{ height: `${value}%` }}></div>
-            //           <div className="mt-2 text-xs text-[#667085]">
-            //             {data[tab.id].labels[index]}
-            //           </div>
-            //           {data[tab.id].subLabels && (
-            //             <div className="text-xs text-[#667085]">
-            //               {data[tab.id].subLabels[index]}
-            //             </div>
-            //           )}
-            //         </div>
-            //       ))}
-            //     </div>
-            //     <div className="absolute left-8 right-0 top-0 bottom-16 flex flex-col justify-between">
-            //       <div className="border-b border-[#e4e7ec]"></div>
-            //       <div className="border-b border-[#e4e7ec]"></div>
-            //       <div className="border-b border-[#e4e7ec]"></div>
-            //       <div className="border-b border-[#e4e7ec]"></div>
-            //     </div>
-            //   </div>
-            type === "bar" ? (
+            {data[tab.id] && type === "bar" ? (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   data={data[tab.id].labels.map((label, index) => ({

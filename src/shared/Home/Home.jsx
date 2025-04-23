@@ -10,6 +10,11 @@ import Header from "../Section-Header/header.jsx";
 import { setSelectedOrder } from "../../redux/OrderSlice.jsx";
 import { useNavigate } from "react-router-dom";
 import avatar from "../../assets/avatar.png";
+import {
+  fetchMonthlyLogin,
+  fetchMonthlyOrders,
+  fetchProfileUpdate,
+} from "../../redux/AnalyticsSlice.jsx";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,6 +27,15 @@ export default function Home() {
   const success = useSelector((state) => state.orderManagement.success);
   const { user, servicePartners, agents } = useSelector((state) => state.user);
   const adminDetails = useSelector((state) => state.admin.adminDetails);
+  const { monthlyOrders, monthlyLogin, profileUpdate } = useSelector(
+    (state) => state.analytics
+  );
+
+  useEffect(() => {
+    dispatch(fetchMonthlyOrders());
+    dispatch(fetchProfileUpdate());
+    dispatch(fetchMonthlyLogin());
+  }, []);
 
   useEffect(() => {
     if (success) {
@@ -74,56 +88,75 @@ export default function Home() {
     },
   ];
 
+  const allMonths = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  // Map full month names to short labels
+  const fullToShortMap = {
+    JANUARY: "Jan",
+    FEBRUARY: "Feb",
+    MARCH: "Mar",
+    APRIL: "Apr",
+    MAY: "May",
+    JUNE: "Jun",
+    JULY: "Jul",
+    AUGUST: "Aug",
+    SEPTEMBER: "Sep",
+    OCTOBER: "Oct",
+    NOVEMBER: "Nov",
+    DECEMBER: "Dec",
+  };
+
+  //reusable function to update the analytics section
+  function updateAnalyticsSection(sectionName, backendData) {
+    const formattedData = {};
+
+    for (const [month, value] of Object.entries(backendData)) {
+      const upper = month.toUpperCase();
+      const short = fullToShortMap[upper];
+      if (short) {
+        formattedData[short] = value;
+      }
+    }
+
+    const values = allMonths.map((month) => formattedData[month] || 0);
+    const subLabels = values.map((val) => val.toString());
+
+    analyticsData[sectionName].labels = allMonths;
+    analyticsData[sectionName].values = values;
+    analyticsData[sectionName].subLabels = subLabels;
+  }
+
   const analyticsData = {
     login: {
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Aug",
-      ],
-      values: [100, 50, 70, 50, 70, 50, 70, 50, 70, 50],
-      subLabels: ["78", "78", "78", "78", "78", "78", "78", "78", "78", "78"],
+      labels: allMonths,
+      values: [],
     },
+
     profile: {
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Aug",
-      ],
-      values: [80, 60, 90, 40, 60, 70, 50, 60, 80, 40],
-      subLabels: ["78", "78", "78", "78", "78", "78", "78", "78", "78", "78"],
+      labels: allMonths,
+      values: [],
     },
     orders: {
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Aug",
-      ],
-      values: [60, 80, 50, 70, 90, 60, 80, 70, 50, 60],
-      subLabels: ["78", "78", "78", "78", "78", "78", "78", "78", "78", "78"],
+      labels: allMonths,
+      values: [],
     },
   };
+  updateAnalyticsSection("orders", monthlyOrders);
+  updateAnalyticsSection("profile", profileUpdate);
+  updateAnalyticsSection("login", monthlyLogin);
 
   const analyticsTabs = [
     { id: "login", label: "Login Frequency" },
