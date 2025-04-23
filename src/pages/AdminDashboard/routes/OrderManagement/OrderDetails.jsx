@@ -4,12 +4,14 @@ import Header from "../../../../shared/Section-Header/header.jsx";
 import { IoIosArrowBack } from "react-icons/io";
 import { StatusBadge } from "../../../../shared/Status-Badge/status-badge.jsx";
 import { useNavigate } from "react-router-dom";
+import avatar from "../../../../assets/avatar.png";
 
 const OrderDetails = () => {
   const navigate = useNavigate();
   const selectedOrder = useSelector(
     (state) => state.selectedOrder.selectedOrder
   );
+  const adminDetails = useSelector((state) => state.admin.adminDetails);
 
   const handleBack = () => {
     navigate(-1);
@@ -18,9 +20,9 @@ const OrderDetails = () => {
     <div>
       <Header
         title=" Order Management"
-        userName="{user.name}"
-        userEmail="{user.email}"
-        userImage="{user.profileImage}"
+        userName={adminDetails?.firstName}
+        userEmail={adminDetails?.email}
+        userImage={adminDetails?.profileImage || avatar}
       />
       <span
         onClick={handleBack}

@@ -8,6 +8,7 @@ import orderReducer from "./OrderMangementSlice";
 import selectedOrder from "./OrderSlice";
 import adminReducer from "./LoggedInAdminSlice";
 import subadminReducer from "./Sub-adminSlice";
+import analyticsReducer from "./AnalyticsSlice";
 
 const persistConfig = {
   key: "root",
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
   admin: adminReducer,
   orderManagement: orderReducer,
   selectedOrder,
-  subadmin: subadminReducer
+  subadmin: subadminReducer,
+  analytics: analyticsReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
