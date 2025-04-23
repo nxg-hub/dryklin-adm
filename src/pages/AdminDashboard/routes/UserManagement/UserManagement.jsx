@@ -18,7 +18,7 @@ const UserManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch();
   const walletBalances = useSelector((state) => state.wallet.walletBalances);
-  const { user, servicePartners, agents } = useSelector((state) => state.user);
+  const { users, servicePartners, agents } = useSelector((state) => state.user);
   const adminDetails = useSelector((state) => state.admin.adminDetails);
 
   const navigate = useNavigate();
@@ -51,15 +51,15 @@ const UserManagement = () => {
   };
 
   useEffect(() => {
-    user?.forEach((user) => {
-      if (user.walletId && !walletBalances[user.walletId]) {
-        dispatch(fetchWalletDetails(user.walletId));
+    users?.forEach((users) => {
+      if (users.walletId && !walletBalances[users.walletId]) {
+        dispatch(fetchWalletDetails(users.walletId));
       }
     });
-  }, [user, dispatch, walletBalances]);
+  }, [users, dispatch, walletBalances]);
   const selectedData = Array.isArray(
     activeSection === "customers"
-      ? user
+      ? users
       : activeSection === "servicePartners"
       ? servicePartners
       : activeSection === "deliveryAgents"
@@ -67,7 +67,7 @@ const UserManagement = () => {
       : []
   )
     ? activeSection === "customers"
-      ? user
+      ? users
       : activeSection === "servicePartners"
       ? servicePartners
       : activeSection === "deliveryAgents"
@@ -79,7 +79,7 @@ const UserManagement = () => {
     {
       key: "firstName",
       title: "Customer Name",
-      render: (user, row) => {
+      render: (users, row) => {
         return (
           <div className="flex items-center gap-3">
             <img
@@ -103,7 +103,7 @@ const UserManagement = () => {
     {
       key: "balance",
       title: "Wallet Balance",
-      render: (user, row) => (
+      render: (users, row) => (
         <span>
           {walletBalances[row.walletId] !== undefined
             ? `₦${walletBalances[row.walletId]}`

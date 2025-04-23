@@ -26,7 +26,7 @@ const AnalyticsAndReports = () => {
     loading,
     error,
   } = useSelector((state) => state.analytics);
-  const { user, servicePartners, agents } = useSelector((state) => state.user);
+  const { users, servicePartners, agents } = useSelector((state) => state.user);
   const adminDetails = useSelector((state) => state.admin.adminDetails);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const AnalyticsAndReports = () => {
   const statsData = [
     {
       title: "Total No. of Users",
-      value: user.length,
+      value: users.length,
       link: "/dashboard/users",
     },
     {
