@@ -20,7 +20,7 @@ const ConfirmSuspendModal = ({onClose, back}) => {
   const handleSuspend = async () => {
     setIsLoading(true)
 
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
      try {
         const response = await fetch(`${API_BASE_URL}/api/v1/auth/${selectedUser?.id}/suspend`, {

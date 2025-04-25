@@ -44,7 +44,7 @@ const AddSubAdmin = ({ isOpen, onClose }) => {
 };
     console.log("Request Body:", requestBody);
 
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     try {
       const response = await fetch(`${API_BASE_URL}${ADD_SUB_ADMIN_URL}`, {

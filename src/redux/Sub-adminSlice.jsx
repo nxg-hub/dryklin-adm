@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 const API_BASE_URL = import.meta.env.VITE_DRYKLIN_API_BASE_URL;
 const SUBADMINS_URL = import.meta.env.VITE_GET_ALL_SUB_ADMINS;
 
-const token = sessionStorage.getItem("token");
+const token = localStorage.getItem("token");
 
 export const fetchSubAdmins = createAsyncThunk('user/fetchSubAdmins', async (_, { rejectWithValue }) => {
     try {
@@ -28,6 +28,7 @@ export const fetchSubAdmins = createAsyncThunk('user/fetchSubAdmins', async (_, 
        
 
     } catch (error) {
+      console.log (error)
       return rejectWithValue(error.message);
     }
     
