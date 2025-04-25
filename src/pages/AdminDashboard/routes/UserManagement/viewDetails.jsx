@@ -57,7 +57,7 @@ const ViewDetails = () => {
       console.error("No user selected");
       return;
     }
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
 
     try {
