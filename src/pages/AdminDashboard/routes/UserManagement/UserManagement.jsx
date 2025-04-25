@@ -10,7 +10,6 @@ import { setSelectedUser } from "../../../../redux/UserSlice";
 import Header from "../../../../shared/Section-Header/header";
 import { fetchWalletDetails } from "../../../../redux/WalletSlice";
 
-
 const UserManagement = () => {
   const [activeSection, setActiveSection] = useState("customers");
   const [isAddSPModalOpen, setIsAddSPModalOpen] = useState("");
@@ -119,7 +118,7 @@ const UserManagement = () => {
       key: "companyName",
       title: "Company Name",
       render: (servicePartners, row) => {
-        console.log("Service Partners:", row, servicePartners);
+        // console.log("Service Partners:", row, servicePartners);
         return (
           <div className="flex items-center gap-3">
             <img
@@ -172,7 +171,6 @@ const UserManagement = () => {
     <div className="container mx-auto py-6 px-4">
       <Header
         title="User Management"
-        
         userName={adminDetails?.firstName}
         userEmail={adminDetails?.email}
         userImage={adminDetails?.profileImage || avatar}
@@ -181,29 +179,27 @@ const UserManagement = () => {
       {/* Search & Filter Component */}
 
       <div className="mt-8 flex items-center justify-between">
-<div className="flex">
-      <SearchFilter onSearch={handleSearch} filter={filters} />
-      </div>
-<div className="flex justify-end">
-      
-        {activeSection !== "customers" && (
-          <button
-            className="bg-[#E85C19]  text-white font-bold px-3 py-2 rounded-lg 
+        <div className="flex">
+          <SearchFilter onSearch={handleSearch} filter={filters} />
+        </div>
+        <div className="flex justify-end">
+          {activeSection !== "customers" && (
+            <button
+              className="bg-[#E85C19]  text-white font-bold px-3 py-2 rounded-lg 
         hover:bg-[#c74e10] transition 
         w-[120px] sm:w-[120px] md:w-[150px] lg:w-[200px] h-[80px] sm:h-[80px] md:h-[80px] lg:h-[60px]"
-            onClick={
-              activeSection === "servicePartners"
-                ? handleAddSPClick
-                : handleAddAgentClick
-            }>
-            {activeSection === "servicePartners"
-              ? "Add Service Partner"
-              : "Add Delivery Agent"}
-          </button>
-        )}
-        
-</div>
-</div>
+              onClick={
+                activeSection === "servicePartners"
+                  ? handleAddSPClick
+                  : handleAddAgentClick
+              }>
+              {activeSection === "servicePartners"
+                ? "Add Service Partner"
+                : "Add Delivery Agent"}
+            </button>
+          )}
+        </div>
+      </div>
       {/* Section Tabs */}
       <div className="container mx-auto  flex  mb-5 gap-10 text-gray-600">
         {["customers", "servicePartners", "deliveryAgents"].map((section) => (
@@ -267,11 +263,11 @@ const UserManagement = () => {
               href="#"
               className="text-[#e86317] text-sm hover:underline"
               onClick={(e) => {
-                e.preventDefault(); 
+                e.preventDefault();
                 dispatch(
                   setSelectedUser({
                     userId: row.id,
-                    data: row, 
+                    data: row,
                   })
                 );
                 navigate("/dashboard/users/viewdetails");
@@ -280,7 +276,7 @@ const UserManagement = () => {
             </a>
           ),
         }}
-        onRowClick={(row) => console.log("Row clicked:", row)}
+        onRowClick={(row) => console.log("Row clicked:")}
       />
     </div>
   );

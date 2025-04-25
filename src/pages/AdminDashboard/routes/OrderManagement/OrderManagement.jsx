@@ -89,7 +89,9 @@ const OrderManagement = () => {
       {loading ? (
         <h2 className="text-center">Loading...</h2>
       ) : !loading && error ? (
-        <h2 className="text-center">Something went wrong</h2>
+        <h2 className="text-center">
+          Something went wrong, check internet connection.
+        </h2>
       ) : (
         <>
           {/* Search & Filter Component */}
@@ -118,7 +120,7 @@ const OrderManagement = () => {
                   </a>
                 ),
               }}
-              onRowClick={(row) => console.log("Row clicked:", row)}
+              onRowClick={(row) => console.log("Row clicked:")}
             />
           </div>
         </>
