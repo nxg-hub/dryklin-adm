@@ -53,7 +53,6 @@ function App() {
               path="/dashboard/subAdmins/sub-admin-details"
               element={<SubAdminDetails />}
             />
-
           </Route>
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

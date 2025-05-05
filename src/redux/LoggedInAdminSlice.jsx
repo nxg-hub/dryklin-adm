@@ -8,7 +8,9 @@ export const fetchAdminDetails = createAsyncThunk(
   async (email, { rejectWithValue }) => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}${import.meta.env.VITE_GET_USER_BY_EMAIL}?email=${email}`,
+        `${API_BASE_URL}${
+          import.meta.env.VITE_GET_USER_BY_EMAIL
+        }?email=${email}`,
         {
           method: "GET",
           headers: {
@@ -33,11 +35,15 @@ export const fetchAdminDetails = createAsyncThunk(
 const adminSlice = createSlice({
   name: "admin",
   initialState: {
-    adminDetails: null, 
+    adminDetails: null,
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    resetAdmin(state, action) {
+      state.adminDetails = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAdminDetails.pending, (state) => {
@@ -46,7 +52,7 @@ const adminSlice = createSlice({
       })
       .addCase(fetchAdminDetails.fulfilled, (state, action) => {
         state.loading = false;
-        state.adminDetails = action.payload; 
+        state.adminDetails = action.payload;
       })
       .addCase(fetchAdminDetails.rejected, (state, action) => {
         state.loading = false;
@@ -54,5 +60,5 @@ const adminSlice = createSlice({
       });
   },
 });
-
+export const { resetAdmin } = adminSlice.actions;
 export default adminSlice.reducer;

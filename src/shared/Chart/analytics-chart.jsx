@@ -67,10 +67,11 @@ export function AnalyticsChart({
         </TabsList>
 
         {tabs.map((tab) => (
-          <TabsContent key={tab.id} value={tab.id} className="mt-0">
+          <TabsContent key={tab.id} value={tab.id} className="mt-0 ">
             {data[tab.id] && type === "bar" ? (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
+                  className="-z-10"
                   data={data[tab.id].labels.map((label, index) => ({
                     label,
                     value: data[tab.id].values[index],

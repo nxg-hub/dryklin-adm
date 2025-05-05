@@ -52,9 +52,9 @@ const UserManagement = () => {
 
   useEffect(() => {
     users?.forEach((users) => {
-      if (users.walletId && !walletBalances[users.walletId]) {
-        dispatch(fetchWalletDetails(users.walletId));
-      }
+      // if (users.walletId && !walletBalances[users.walletId]) {
+      dispatch(fetchWalletDetails(users.walletId));
+      // }
     });
   }, [users, dispatch, walletBalances]);
   const selectedData = Array.isArray(
@@ -105,8 +105,8 @@ const UserManagement = () => {
       title: "Wallet Balance",
       render: (users, row) => (
         <span>
-          {walletBalances[row.walletId] !== undefined
-            ? `₦${walletBalances[row.walletId]}`
+          {walletBalances[row?.walletId] !== undefined
+            ? `₦${walletBalances[row?.walletId]}`
             : "NIL"}
         </span>
       ),
@@ -236,7 +236,7 @@ const UserManagement = () => {
         )}
       </div>
 
-      <div className="relative w-full mx-auto">
+      <div className="relative w-full mx-auto -z-10">
         <div className="w-full h-0.5 bg-gray-100"></div>
       </div>
 
