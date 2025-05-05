@@ -17,7 +17,6 @@ const SubAdminDetails = () => {
   const selectedSubadmin = useSelector(
     (state) => state.subadmin.selectedSubadmin
   );
-  console.log(selectedSubadmin);
   const [modalConfig, setModalConfig] = useState({
     show: false,
     type: "success",
