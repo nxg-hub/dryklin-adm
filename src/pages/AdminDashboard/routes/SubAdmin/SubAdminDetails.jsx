@@ -158,7 +158,7 @@ const SubAdminDetails = () => {
 
           { label: "Date Created", value: formattedDate },
         ].map(({ label, value, fullValue }) => (
-          <div key={label} className="group w-full">
+          <div key={label} className="group w-full z-[-10]">
             <h1 className="text-[#E85C13] text-2xl font-bold relative">
               {label}
             </h1>
