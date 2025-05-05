@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
-import { FaRegCopy } from "react-icons/fa"; 
+import { FaRegCopy } from "react-icons/fa";
 import avatar from "../../../../assets/avatar.png";
 import FeedbackModal from "../../../../components/modal";
 import { fetchSubAdmins } from "../../../../redux/Sub-adminSlice";
@@ -14,7 +14,10 @@ const SubAdminDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const [isConfirmSuspendModalOpen, setConfirmSuspendModalOpen] = useState("");
-  const selectedSubadmin = useSelector((state) => state.subadmin.selectedSubadmin);
+  const selectedSubadmin = useSelector(
+    (state) => state.subadmin.selectedSubadmin
+  );
+  console.log(selectedSubadmin);
   const [modalConfig, setModalConfig] = useState({
     show: false,
     type: "success",
@@ -31,14 +34,13 @@ const SubAdminDetails = () => {
   const handleCopy = (text, field) => {
     navigator.clipboard.writeText(text);
     setCopied(field);
-    setTimeout(() => setCopied(""), 2000); 
+    setTimeout(() => setCopied(""), 2000);
   };
 
-  
   const dateCreated = selectedSubadmin?.dateCreated;
 
   let formattedDate = "";
-  
+
   if (Array.isArray(dateCreated) && dateCreated.length >= 3) {
     const [year, month, day] = dateCreated;
     formattedDate = `${month}/${day}/${year}`;
@@ -57,7 +59,6 @@ const SubAdminDetails = () => {
     }
     const token = localStorage.getItem("token");
 
-
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/v1/auth/subadmins/deactivate?email=${selectedSubadmin?.email}`,
@@ -66,7 +67,6 @@ const SubAdminDetails = () => {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-
           },
           body: JSON.stringify({ email: selectedSubadmin.email }),
         }
@@ -89,9 +89,7 @@ const SubAdminDetails = () => {
           description: "You have successfully deactivated Subadmin.",
           redirectPath: "/dashboard/subAdmins",
         });
-       dispatch(fetchSubAdmins());
-
-        
+        dispatch(fetchSubAdmins());
       } else {
         setModalConfig({
           show: true,
@@ -125,8 +123,6 @@ const SubAdminDetails = () => {
 
   if (!selectedSubadmin) return <p>No details found.</p>;
 
-  
-
   return (
     <div className="container mx-auto py-6 px-4">
       <div className="font-bold text-3xl">Sub-Admin</div>
@@ -142,41 +138,40 @@ const SubAdminDetails = () => {
           src={selectedSubadmin?.ProfilePic || avatar}
           alt="User Image"
         />
-        </div>
+      </div>
       <div className="container p-6 grid grid-cols-1 md:grid-cols-3 gap-6 mt-5 text-black">
         {[
           {
             label: "First Name",
-            value:
-              selectedSubadmin?.firstName || selectedUser?.companyName || firstname,
+            value: selectedSubadmin?.firstName || selectedUser?.companyName,
           },
-          { label: "Last Name", value: selectedSubadmin?.lastName || lastname },
-          { label: "Email Address",
-             value: selectedSubadmin?.email?.length > 10
-             ? `${selectedSubadmin?.email.slice(0, 16)}...`
-             : selectedSubadmin?.email,
-             fullValue: selectedSubadmin?.email,
-             },
+          { label: "Last Name", value: selectedSubadmin?.lastName },
+          {
+            label: "Email Address",
+            value:
+              selectedSubadmin?.email?.length > 10
+                ? `${selectedSubadmin?.email.slice(0, 16)}...`
+                : selectedSubadmin?.email,
+            fullValue: selectedSubadmin?.email,
+          },
           { label: "Phone Number", value: selectedSubadmin?.phoneNumber },
           {
             label: "Password",
-            value: selectedSubadmin?.password?.length > 10
-              ? `${selectedSubadmin.password.slice(0, 10)}...`
-              : selectedSubadmin?.password,
-            fullValue: selectedSubadmin?.password, 
-
+            value:
+              selectedSubadmin?.password?.length > 10
+                ? `${selectedSubadmin.password.slice(0, 10)}...`
+                : selectedSubadmin?.password,
+            fullValue: selectedSubadmin?.password,
           },
           { label: "Date Created", value: formattedDate },
-
-          
         ].map(({ label, value, fullValue }) => (
           <div key={label} className="group w-full">
             <h1 className="text-[#E85C13] text-2xl font-bold relative">
               {label}
             </h1>
-            
+
             <div className="flex items-center gap-2 mt-3">
-              <h2 className="text-1xl">{value}</h2>  
+              <h2 className="text-1xl">{value}</h2>
               <FaRegCopy
                 className="ml-8 h-5 w-5 text-gray-400 cursor-pointer hover:text-black"
                 onClick={() => handleCopy(fullValue || value, label)}
@@ -189,58 +184,62 @@ const SubAdminDetails = () => {
           </div>
         ))}
       </div>
-      
+
       <div className="container px-10 mt-20 flex justify-end text-black">
-  <div className="flex items-center gap-5"> 
-    
-<button 
-  className={`text-xl ${selectedSubadmin?.suspended === true ? 'text-gray-400 cursor-not-allowed' : 'text-[#E85C13]'}`}
-  onClick={handleConfirmSuspendClick}
-  disabled={selectedSubadmin?.suspended === true}
->
-  {selectedSubadmin?.suspended === true ? ' Suspended' : 'Suspend'}
-</button>
+        <div className="flex items-center gap-5">
+          <button
+            className={`text-xl ${
+              selectedSubadmin?.suspended === true
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-[#E85C13]"
+            }`}
+            onClick={handleConfirmSuspendClick}
+            disabled={selectedSubadmin?.suspended === true}>
+            {selectedSubadmin?.suspended === true ? " Suspended" : "Suspend"}
+          </button>
 
+          {/* Deactivate Button */}
+          <button
+            className={`bg-[#E85C19] text-white px-8 py-4 rounded-lg flex items-center gap-2 transition 
+             ${
+               selectedSubadmin?.enabled === false
+                 ? "bg-gray-400 cursor-not-allowed"
+                 : "hover:bg-[#c74e10]"
+             }`}
+            onClick={handleDeactivateClick}
+            disabled={selectedSubadmin?.enabled === false || isLoading}>
+            {isLoading
+              ? "Please Wait..."
+              : selectedSubadmin?.enabled === false
+              ? "Deactivated"
+              : "Deactivate"}
+          </button>
 
-{/* Deactivate Button */}
-<button 
-  className={`bg-[#E85C19] text-white px-8 py-4 rounded-lg flex items-center gap-2 transition 
-             ${selectedSubadmin?.enabled === false ? 'bg-gray-400 cursor-not-allowed' : 'hover:bg-[#c74e10]'}`}
-  onClick={handleDeactivateClick}
-  disabled={selectedSubadmin?.enabled === false || isLoading}
->
-  {isLoading 
-    ? 'Please Wait...' 
-    : selectedSubadmin?.enabled === false 
-      ? 'Deactivated' 
-      : 'Deactivate'}
-</button>
-  
-      {isConfirmSuspendModalOpen && (
-        <ConfirmSuspendModal
-          isOpen={isConfirmSuspendModalOpen}
-          onClose={() => setConfirmSuspendModalOpen(false)}
-          back={handleBack}
-
-        />
-      )}
-       {modalConfig.show && (
-                                  <FeedbackModal
-                                      type={modalConfig.type}
-                                      title={modalConfig.title}
-                                      description={modalConfig.description}
-                                      buttonText={modalConfig.type === "success" ? "Continue" : "Try Again"}
-                                      redirectPath={modalConfig.redirectPath}
-                                      onClose={closeModal}
-                                      onButtonClick={modalConfig.type === "success" ? null : closeModal}
-                                      primaryColor="#E85C13"
-                                  />
-                              )}
-  </div>
-</div>  
-          </div>
-    )
-
- }
+          {isConfirmSuspendModalOpen && (
+            <ConfirmSuspendModal
+              isOpen={isConfirmSuspendModalOpen}
+              onClose={() => setConfirmSuspendModalOpen(false)}
+              back={handleBack}
+            />
+          )}
+          {modalConfig.show && (
+            <FeedbackModal
+              type={modalConfig.type}
+              title={modalConfig.title}
+              description={modalConfig.description}
+              buttonText={
+                modalConfig.type === "success" ? "Continue" : "Try Again"
+              }
+              redirectPath={modalConfig.redirectPath}
+              onClose={closeModal}
+              onButtonClick={modalConfig.type === "success" ? null : closeModal}
+              primaryColor="#E85C13"
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default SubAdminDetails;

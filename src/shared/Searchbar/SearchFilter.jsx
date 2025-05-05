@@ -39,7 +39,7 @@ const SearchFilter = ({ onSearch, filters }) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-center gap-2 w-full max-w-md mb-11">
+    <div className="flex flex-col md:flex-row items-center gap-2 w-full max-w-md mb-11 ">
       {/* Dropdown filter */}
       {currentRoute === "/dashboard/orderManagement" && (
         <div className="flex gap-2 items-center">

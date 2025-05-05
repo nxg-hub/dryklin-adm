@@ -80,10 +80,6 @@ const OrderManagement = () => {
           userEmail={adminDetails?.email}
           userImage={adminDetails?.profileImage || avatar}
         />
-        {/* <span className="flex items-center ml-2.5 gap-2 font-light text-white text-[16px] px-3 py-2 rounded-full bg-[#F32749]  ">
-          <MdOutlineMenuBook size={16} />
-          {ordersData.length}
-        </span> */}
       </h2>
 
       {loading ? (

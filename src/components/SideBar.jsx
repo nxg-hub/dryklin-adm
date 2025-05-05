@@ -1,13 +1,51 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { MdOutlineMenuBook } from "react-icons/md";
 import { RxDashboard } from "react-icons/rx";
+import { MdOutlineLogout } from "react-icons/md";
 import logo from "../assets/white-logo.png";
 import { GrAnalytics, GrUserAdmin } from "react-icons/gr";
+import { useDispatch, useSelector } from "react-redux";
+import FeedbackModal from "./modal";
+import { resetAdmin } from "../redux/LoggedInAdminSlice";
+import { resetAnalytics } from "../redux/AnalyticsSlice";
+import { resetOrders } from "../redux/OrderMangementSlice";
+import { resetSelectedOrder } from "../redux/OrderSlice";
+import { resetSubadmin } from "../redux/Sub-adminSlice";
+import { resetUser } from "../redux/UserSlice";
+import { resetWallet } from "../redux/WalletSlice";
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [modalConfig, setModalConfig] = useState({
+    show: false,
+    type: "success",
+    title: "Are you sure you want to logout?",
+    description: "",
+    redirectPath: "/dashboard",
+  });
+  const closeModal = () => {
+    setModalConfig({ ...modalConfig, show: false });
+  };
+
+  const handleSignout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userEmail");
+    sessionStorage.removeItem("sessionId");
+    sessionStorage.removeItem("token");
+    dispatch(resetAdmin());
+    dispatch(resetAnalytics());
+    dispatch(resetOrders());
+    dispatch(resetSelectedOrder());
+    dispatch(resetSubadmin());
+    dispatch(resetUser());
+    dispatch(resetWallet());
+    navigate("/");
+  };
   const location = useLocation();
+  const adminDetails = useSelector((state) => state.admin.adminDetails);
   const currentRoute = location.pathname;
 
   const sideBarItems = [
@@ -31,10 +69,16 @@ const Sidebar = () => {
       name: "Analytics and Report",
       icon: <GrAnalytics size={24} />,
     },
+    // adminDetails.userType === "ADMIN" &&
     {
       path: "/dashboard/subAdmins",
       name: "Sub-Admins",
       icon: <GrUserAdmin size={24} />,
+    },
+    {
+      path: "",
+      name: "Sign Out",
+      icon: <MdOutlineLogout size={24} />,
     },
   ];
 
@@ -52,7 +96,20 @@ const Sidebar = () => {
         {sideBarItems.map((item, i) => (
           <li key={i} className="mb-5">
             <Link
-              to={item.path}
+              onClick={() => {
+                if (item.name === "Sign Out") {
+                  console.log("hey");
+                  setModalConfig({
+                    show: true,
+                    type: "success",
+                    title: "Sign Out",
+                    description: "Are You Sure You Want To Sign Out?.",
+                  });
+                } else {
+                  return;
+                }
+              }}
+              to={item.name === "Sign Out" ? null : item.path}
               className={`text-sm ${
                 currentRoute === item.path
                   ? "text-[#E86317] bg-white"
@@ -66,6 +123,22 @@ const Sidebar = () => {
           </li>
         ))}
       </ul>
+      <div>
+        {modalConfig.show && (
+          <FeedbackModal
+            type={modalConfig.type}
+            title={modalConfig.title}
+            description={modalConfig.description}
+            buttonText={
+              modalConfig.type === "success" ? "Continue" : "Try Again"
+            }
+            redirectPath={modalConfig.redirectPath}
+            onClose={closeModal}
+            onButtonClick={handleSignout}
+            primaryColor="#E85C13"
+          />
+        )}
+      </div>
     </div>
   );
 };

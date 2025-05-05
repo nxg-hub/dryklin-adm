@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DataTable } from "../../../../shared/Table/data-table";
 import { useNavigate } from "react-router-dom";
 import avatar from "../../../../assets/avatar.png";
@@ -6,7 +6,10 @@ import Header from "../../../../shared/Section-Header/header";
 import SearchFilter from "../../../../shared/Searchbar/SearchFilter";
 import AddSubAdmin from "./AddSubAdmin";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedSubadmin } from "../../../../redux/Sub-adminSlice";
+import {
+  fetchSubAdmins,
+  setSelectedSubadmin,
+} from "../../../../redux/Sub-adminSlice";
 
 const SubAdmin = () => {
   const dispatch = useDispatch();
@@ -16,6 +19,10 @@ const SubAdmin = () => {
   const [isAddSAModalOpen, setIsAddSAModalOpen] = useState("");
   const adminDetails = useSelector((state) => state.admin.adminDetails);
   const subadmins = useSelector((state) => state.subadmin.subadmins);
+
+  useEffect(() => {
+    dispatch(fetchSubAdmins());
+  }, []);
 
   const filters = [
     { label: "Select", value: "" },
@@ -45,7 +52,6 @@ const SubAdmin = () => {
     const [year, month, day] = dateCreated;
     formattedDate = `${month}/${day}/${year}`;
   }
-  console.log("date", formattedDate);
 
   const SubAdminColumns = [
     {

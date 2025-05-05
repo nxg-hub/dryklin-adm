@@ -11,8 +11,11 @@ const orderSlice = createSlice({
     setSelectedOrder: (state, action) => {
       state.selectedOrder = action.payload;
     },
+    resetSelectedOrder(state, action) {
+      state.selectedOrder = [];
+    },
   },
 });
 
-export const { setSelectedOrder } = orderSlice.actions;
+export const { setSelectedOrder, resetSelectedOrder } = orderSlice.actions;
 export default orderSlice.reducer;
