@@ -155,14 +155,7 @@ const SubAdminDetails = () => {
             fullValue: selectedSubadmin?.email,
           },
           { label: "Phone Number", value: selectedSubadmin?.phoneNumber },
-          {
-            label: "Password",
-            value:
-              selectedSubadmin?.password?.length > 10
-                ? `${selectedSubadmin.password.slice(0, 10)}...`
-                : selectedSubadmin?.password,
-            fullValue: selectedSubadmin?.password,
-          },
+
           { label: "Date Created", value: formattedDate },
         ].map(({ label, value, fullValue }) => (
           <div key={label} className="group w-full">
