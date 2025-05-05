@@ -117,7 +117,7 @@ const AnalyticsAndReports = () => {
     },
     users: {
       labels: allMonths,
-      values: [],
+      values: [10, 20, 30, 40, 5, 25, 0, 0, 10, 0, 0, 5],
     },
 
     profile: {
@@ -142,12 +142,33 @@ const AnalyticsAndReports = () => {
   ];
 
   const analyticsYaxis = [100, 75, 50, 25, 0];
+  //reusable function to update the analytics section
+  function updateUserRetentionSection(sectionName, backendData) {
+    const formattedData = {};
+
+    for (const [month, value] of Object.entries(backendData)) {
+      const upper = month.toUpperCase();
+      const short = fullToShortMap[upper];
+      if (short) {
+        formattedData[short] = value;
+      }
+    }
+
+    const values = allMonths.map((month) => formattedData[month] || 0);
+    const subLabels = values.map((val) => val.toString());
+
+    userRetentionData[sectionName].labels = allMonths;
+    userRetentionData[sectionName].values = values;
+    userRetentionData[sectionName].subLabels = subLabels;
+  }
   const userRetentionData = {
     userRetention: {
       labels: allMonths,
-      values: [100, 50, 70, 50, 70, 50, 70, 50, 70, 50],
+      values: [],
     },
   };
+  updateUserRetentionSection("userRetention", newUsers);
+
   const retentionYaxis = ["125", "100", "75", "50", "25"];
   const userRetentionTab = [{ id: "userRetention", label: "User Retention" }];
 

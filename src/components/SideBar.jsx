@@ -15,10 +15,16 @@ import { resetSelectedOrder } from "../redux/OrderSlice";
 import { resetSubadmin } from "../redux/Sub-adminSlice";
 import { resetUser } from "../redux/UserSlice";
 import { resetWallet } from "../redux/WalletSlice";
+import { openModal, closedModal } from "../redux/uiSlice";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const adminDetails = useSelector((state) => state.admin.adminDetails);
+  const location = useLocation();
+  const currentRoute = location.pathname;
+  const isModalOpen = useSelector((state) => state.ui.isModalOpen);
+
   const [modalConfig, setModalConfig] = useState({
     show: false,
     type: "success",
@@ -28,6 +34,7 @@ const Sidebar = () => {
   });
   const closeModal = () => {
     setModalConfig({ ...modalConfig, show: false });
+    dispatch(closedModal());
   };
 
   const handleSignout = () => {
@@ -44,9 +51,6 @@ const Sidebar = () => {
     dispatch(resetWallet());
     navigate("/");
   };
-  const location = useLocation();
-  const adminDetails = useSelector((state) => state.admin.adminDetails);
-  const currentRoute = location.pathname;
 
   const sideBarItems = [
     {
@@ -98,7 +102,7 @@ const Sidebar = () => {
             <Link
               onClick={() => {
                 if (item.name === "Sign Out") {
-                  console.log("hey");
+                  dispatch(openModal());
                   setModalConfig({
                     show: true,
                     type: "success",

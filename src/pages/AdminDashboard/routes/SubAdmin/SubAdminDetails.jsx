@@ -17,7 +17,6 @@ const SubAdminDetails = () => {
   const selectedSubadmin = useSelector(
     (state) => state.subadmin.selectedSubadmin
   );
-  console.log(selectedSubadmin);
   const [modalConfig, setModalConfig] = useState({
     show: false,
     type: "success",
@@ -155,17 +154,10 @@ const SubAdminDetails = () => {
             fullValue: selectedSubadmin?.email,
           },
           { label: "Phone Number", value: selectedSubadmin?.phoneNumber },
-          {
-            label: "Password",
-            value:
-              selectedSubadmin?.password?.length > 10
-                ? `${selectedSubadmin.password.slice(0, 10)}...`
-                : selectedSubadmin?.password,
-            fullValue: selectedSubadmin?.password,
-          },
+
           { label: "Date Created", value: formattedDate },
         ].map(({ label, value, fullValue }) => (
-          <div key={label} className="group w-full">
+          <div key={label} className="group w-full z-[-10]">
             <h1 className="text-[#E85C13] text-2xl font-bold relative">
               {label}
             </h1>

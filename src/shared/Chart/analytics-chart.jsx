@@ -1,5 +1,6 @@
 "use client";
 
+import { useSelector } from "react-redux";
 import {
   Tabs,
   TabsContent,
@@ -27,6 +28,7 @@ export function AnalyticsChart({
   yAxis,
   type,
 }) {
+  const isModalOpen = useSelector((state) => state.ui.isModalOpen);
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -67,11 +69,14 @@ export function AnalyticsChart({
         </TabsList>
 
         {tabs.map((tab) => (
-          <TabsContent key={tab.id} value={tab.id} className="mt-0 ">
+          <TabsContent
+            key={tab.id}
+            value={tab.id}
+            className={`mt-0 ${isModalOpen ? "pointer-events-none" : ""} `}>
             {data[tab.id] && type === "bar" ? (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
-                  className="-z-10"
+                  className={`${isModalOpen ? "-z-10" : "z-10"}`}
                   data={data[tab.id].labels.map((label, index) => ({
                     label,
                     value: data[tab.id].values[index],
@@ -85,6 +90,7 @@ export function AnalyticsChart({
             ) : (
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart
+                  className={`${isModalOpen ? "-z-10" : "z-10"}`}
                   data={data[tab.id].labels.map((label, index) => ({
                     label,
                     value: data[tab.id].values[index],
